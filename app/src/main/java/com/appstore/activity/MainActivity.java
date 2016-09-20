@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int[] location1 = new int[2];
         cursor.getLocationOnScreen(location1);
         currentX = location[0] + offset;
-        Toast.makeText(getApplicationContext(), currentX + "", Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(getApplicationContext(), currentX + "", Toast.LENGTH_SHORT).show();
 
         switch (v.getId()) {
             case R.id.tvTag1:
@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         View downView = (LinearLayout) view.findViewById(R.id.mLayout);
         // 启动popupWindow；
         PopupWindowUtils popu = new PopupWindowUtils(MainActivity.this,
-                screenWidth, screenHeigh - 38, downView, view);
+                screenWidth, screenHeigh - 100, downView, view);
        // center = (TextView) view.findViewById(R.id.center);// 个人中心
     }
 

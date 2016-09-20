@@ -50,9 +50,9 @@ public class PopupWindowUtils {
 			 
 			// popupWindow.showAsDropDown(down);
 			 popupWindow.setFocusable(true);   
-			 popupWindow.setOutsideTouchable(true);//�����ⲿ�ܵ��
-			 popupWindow.showAtLocation(downview, Gravity.RIGHT, 0, 0); 
-			 popupWindow.setAnimationStyle(R.style.PopupAnimation);
+			 popupWindow.setOutsideTouchable(true);
+			 popupWindow.showAtLocation(downview,Gravity.LEFT|Gravity.TOP, 0,300);
+			// popupWindow.setAnimationStyle(R.style.PopupAnimation);
 			 popupWindow.update();
 			 
 			//setting popupWindow d�����ʧ
