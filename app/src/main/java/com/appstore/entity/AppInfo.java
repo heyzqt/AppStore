@@ -1,4 +1,4 @@
-package com.appstore.bean;
+package com.appstore.entity;
 
 /**
  * Created by 张艳琴 on 2016/9/19.
