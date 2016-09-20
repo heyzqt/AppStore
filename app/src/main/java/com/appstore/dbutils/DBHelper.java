@@ -3,7 +3,7 @@ package com.appstore.dbutils;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.appstore.bean.AppInfo;
+import com.appstore.entity.AppInfo;
 import com.lidroid.xutils.DbUtils;
 import com.lidroid.xutils.exception.DbException;
 /**
