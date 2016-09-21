@@ -11,4 +11,6 @@
     <color name="color_black">#000</color>
     <color name="color_bg">#f6f6f6</color>
     <color name="color_gray">#bfbfbf</color>
+    <color name="color_787878">#787878</color>
+    <color name="color_transparent">#00000000</color>
 </resources>
