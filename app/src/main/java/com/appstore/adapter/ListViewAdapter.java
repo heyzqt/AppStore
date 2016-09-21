@@ -1,6 +1,8 @@
 package com.appstore.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +15,17 @@ import android.widget.TextView;
 
 import com.appstore.R;
 import com.appstore.fragment.MainFragment;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by XFT on 2016/9/20.
@@ -22,24 +34,31 @@ public class ListViewAdapter extends BaseAdapter implements View.OnClickListener
     private LayoutInflater inflater;
     private  Context context;
     private ImageLoader mImageLoader;
-    public ListViewAdapter(Context context)
+    public static String IMAGE_CACHE_PATH = "imageloader/Cache";
+    private ArrayList<HashMap<String,Object>> listdata;
+    public ListViewAdapter(Context context, ArrayList<HashMap<String,Object>> listdata)
     {
+        Log.i("125"," ListViewAdapter");
         this.context=context;
+        this.listdata=listdata;
         this.inflater=LayoutInflater.from(context);
     }
     @Override
     public int getCount() {
         MainFragment mf=new MainFragment();
-        return mf.getListData().size();
+        Log.i("125","getcount:"+String.valueOf(listdata.size()));
+        return listdata.size();
     }
 
     @Override
     public Object getItem(int position) {
+        Log.i("125"," getItem");
         return null;
     }
 
     @Override
     public long getItemId(int position) {
+        Log.i("125"," getItemId");
         return 0;
     }
 
@@ -57,24 +76,43 @@ public class ListViewAdapter extends BaseAdapter implements View.OnClickListener
             holder.tv_appsize=(TextView) convertView.findViewById(R.id.mfg_tv_appsize);
             holder.tv_appintro=(TextView) convertView.findViewById(R.id.mfg_tv_intro);
             holder.rb_apprank=(RatingBar) convertView.findViewById(R.id.mfg_rb_ratingBar);
+
+
+
+            initImageLoader(context);
+            mImageLoader = ImageLoader.getInstance();
+            holder.img_appimg.setScaleType(ImageView.ScaleType.FIT_XY);
+            mImageLoader.displayImage("http://192.168.0.83:8080/GooglePlayServer/image?name="+listdata.get(position).get("iconUrl").toString(),holder.img_appimg,getOption());
+
+            Log.i("126","imgurl:"+listdata.get(position).get("iconUrl").toString());
+            holder.rb_apprank.setRating(Float.parseFloat(listdata.get(position).get("stars").toString()));
+
+            holder.tv_appname.setText(listdata.get(position).get("name").toString());
+            Log.i("125","appname:"+listdata.get(position).get("name").toString());
+            holder.tv_appintro.setText(listdata.get(position).get("intro").toString());
+            Log.i("125","appintro:"+listdata.get(position).get("intro").toString());
+            holder.tv_appsize.setText(String.valueOf((Float.parseFloat(listdata.get(position).get("size").toString()))/(1024*1024))+"MB");
+           // String.valueOf((Float.parseFloat(listdata.get(position).get("size").toString())))+"MB"
             convertView.setTag(holder);
         }
         else
         {
-/*            mImageLoader = ImageLoader.getInstance();*/
-            MainFragment mf=new MainFragment();
-/*            ImgLoader il=new ImgLoader();
-            il.initImageLoader(context);
             holder=(ViewHolder)convertView.getTag();
-            mImageLoader.displayImage(mf.getListData().get(position).get("iconUrl").toString()
-                    ,holder.img_appimg,il.getOption());
-            holder.img_appimg.setScaleType(ImageView.ScaleType.FIT_XY);*/
-/*            holder.img_appimg.setImageResource((int)mf.getData().get(position).get("appimg"));
-            holder.rb_apprank.setProgress(mf.getData().get(position).get("stars"));*/
-            holder.tv_appname.setText(mf.getListData().get(position).get("name").toString());
-            holder.tv_appintro.setText(mf.getListData().get(position).get("intro").toString());
-            holder.tv_appsize.setText(mf.getListData().get(position).get("size").toString());
-            holder.rb_apprank.setProgress(Integer.parseInt(mf.getListData().get(position).get("stars").toString()));
+            holder.img_appimg.setScaleType(ImageView.ScaleType.FIT_XY);
+            initImageLoader(context);
+            mImageLoader = ImageLoader.getInstance();
+            mImageLoader.displayImage("http://192.168.0.83:8080/GooglePlayServer/image?name="+listdata.get(position).get("iconUrl").toString(),holder.img_appimg,getOption()
+            );
+
+            Log.i("126","imgurl:"+listdata.get(position).get("iconUrl").toString());
+            holder.rb_apprank.setProgress(Integer.parseInt(listdata.get(position).get("stars").toString()));
+
+            holder.tv_appname.setText(listdata.get(position).get("name").toString());
+            Log.i("125","appname:"+listdata.get(position).get("name").toString());
+            holder.tv_appintro.setText(listdata.get(position).get("intro").toString());
+            Log.i("125","appintro:"+listdata.get(position).get("intro").toString());
+            holder.tv_appsize.setText(listdata.get(position).get("size").toString());
+
         }
         return convertView;
     }
@@ -89,5 +127,37 @@ public class ListViewAdapter extends BaseAdapter implements View.OnClickListener
                 //downApk();
                 break;
         }
+    }
+
+    public void initImageLoader(Context context) {
+        File cacheDir = com.nostra13.universalimageloader.utils.StorageUtils
+                .getOwnCacheDirectory(context,
+                        IMAGE_CACHE_PATH);
+
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .cacheInMemory(true).cacheOnDisc(true).build();
+
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
+                context).defaultDisplayImageOptions(defaultOptions)
+                .memoryCache(new LruMemoryCache(12 * 1024 * 1024))
+                .memoryCacheSize(12 * 1024 * 1024)
+                .discCacheSize(32 * 1024 * 1024).discCacheFileCount(100)
+                .discCache(new UnlimitedDiscCache(cacheDir))
+                .threadPriority(Thread.NORM_PRIORITY - 2)
+                .tasksProcessingOrder(QueueProcessingType.LIFO).build();
+        ImageLoader.getInstance().init(config);
+    }
+
+    public DisplayImageOptions getOption()
+    {
+        DisplayImageOptions options;
+        options = new DisplayImageOptions.Builder()
+                .showStubImage(R.mipmap.ic_launcher)
+                .showImageForEmptyUri(R.mipmap.ic_launcher)
+                .showImageOnFail(R.mipmap.ic_launcher)
+                .cacheInMemory(true).cacheOnDisc(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .imageScaleType(ImageScaleType.EXACTLY).build();
+        return  options;
     }
 }

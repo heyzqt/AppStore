@@ -47,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/mf_mainlistview"
                     android:dividerHeight="5dp"
-                    android:divider="@color/colorgray"
+                    android:divider="@color/color_gray"
                     android:choiceMode="multipleChoice" />
                     android:choiceMode="multipleChoice"
                     />
