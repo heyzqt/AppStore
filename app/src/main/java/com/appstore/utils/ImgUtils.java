@@ -1,7 +1,6 @@
 package com.appstore.utils;
 
 import android.graphics.Bitmap;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.appstore.R;
@@ -23,11 +22,10 @@ public class ImgUtils {
     /**
      * 加载网络图片
      *
-     * @param view
      * @param imgurl
-     * @param imgId
+     * @param img
      */
-    public static void setInterImg(View view, String imgurl, int imgId) {
+    public static void setInterImg(String imgurl, ImageView img) {
         mImageLoader = ImageLoader.getInstance();
         options = new DisplayImageOptions.Builder()
                 .showStubImage(R.mipmap.ic_launcher)
@@ -36,11 +34,10 @@ public class ImgUtils {
                 .cacheInMemory(true).cacheOnDisc(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .imageScaleType(ImageScaleType.EXACTLY).build();
-        addDynamicView(view, imgurl, imgId);
+        addDynamicView(imgurl, img);
     }
 
-    private static void addDynamicView(View view, String imgurl, int imgId) {
-        ImageView img = (ImageView) view.findViewById(imgId);
+    private static void addDynamicView(String imgurl, ImageView img) {
         mImageLoader.displayImage(imgurl, img,
                 options);
         img.setScaleType(ImageView.ScaleType.CENTER_CROP);

@@ -21,7 +21,7 @@ public class StoreApplication extends Application {
      */
     public static String IP_ADDRESS;
 
-    private final String IMAGE_CACHE_PATH="imageloader/Cache/Type";
+    private final String IMAGE_CACHE_PATH="AppStore/Cache";
 
     @Override
     public void onCreate() {
