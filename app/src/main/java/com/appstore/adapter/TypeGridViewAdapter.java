@@ -12,7 +12,7 @@ public class TypeGridViewAdapter extends BaseAdapter {
 
     private Context mContext;
 
-    private List<> mDatas;
+   // private List<> mDatas;
 
     public TypeGridViewAdapter(){}
 

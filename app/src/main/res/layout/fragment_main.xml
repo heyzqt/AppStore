@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/mf_mainlistview"
                     android:dividerHeight="5dp"
-                    android:divider="@color/colorbg"
+                    android:divider="@color/color_bg"
                     android:choiceMode="multipleChoice" />
             </LinearLayout>
         </LinearLayout>

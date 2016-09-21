@@ -2,7 +2,7 @@
     android:id="@+id/mLayout"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorbg"
+    android:background="@color/color_bg"
     android:orientation="vertical">
 
     <RelativeLayout
