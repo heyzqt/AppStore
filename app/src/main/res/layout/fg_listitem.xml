@@ -4,129 +4,131 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
         android:orientation="horizontal"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
         android:weightSum="1">
 
         <LinearLayout
+            android:orientation="vertical"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.06"
-            android:orientation="vertical"></LinearLayout>
+            android:layout_weight="0.06"></LinearLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.88"
             android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="0.88"
+            android:layout_height="match_parent"
             android:weightSum="1">
 
             <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="0.8"
-                android:orientation="horizontal"
                 android:weightSum="1">
 
                 <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.15"
-                    android:orientation="vertical">
+                    android:layout_weight="0.15">
+
+
                     <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
+                        android:layout_height="fill_parent"
+                        >
 
                         <ImageView
-                            android:id="@+id/mfg_img_app"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
+                            android:id="@+id/mfg_img_app"
+                            android:src="@mipmap/ic_launcher"
                             android:layout_centerVertical="true"
-                            android:src="@mipmap/ic_launcher" />
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
                     </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.7"
-                    android:orientation="vertical"
                     android:weightSum="1">
 
                     <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="0.4"
-                        android:orientation="horizontal">
+                        android:layout_weight="0.4">
 
                         <TextView
-                            android:id="@+id/mfg_tv_appname"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
                             android:text="Medium Text"
-                            />
+                            android:layout_marginTop="5dp"
+                            android:id="@+id/mfg_tv_appname" />
                     </LinearLayout>
 
                     <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="0.2"
-                        android:orientation="horizontal">
+                        android:layout_weight="0.2">
 
                         <RatingBar
-                            android:id="@+id/mfg_rb_ratingBar"
                             android:layout_width="wrap_content"
-                            android:layout_height="10dp" />
+                            android:layout_height="10dp"
+                            android:id="@+id/mfg_rb_ratingBar" />
                     </LinearLayout>
 
                     <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="0.4"
-                        android:orientation="horizontal">
+                        android:layout_weight="0.4">
 
                         <TextView
-                            android:id="@+id/mfg_tv_appsize"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
                             android:text="Medium Text"
-                             />
+                            android:layout_marginTop="5dp"
+                            android:id="@+id/mfg_tv_appsize" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
                     android:layout_weight="0.15"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent">
 
                     <RelativeLayout
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent">
 
                         <ImageView
-                            android:id="@+id/mfg_img_download"
                             android:layout_width="36dp"
                             android:layout_height="36dp"
-                            android:layout_centerHorizontal="true"
+                            android:id="@+id/mfg_img_download"
+                            android:src="@mipmap/ic_launcher"
                             android:layout_centerVertical="true"
-                            android:src="@mipmap/ic_launcher" />
+                            android:layout_centerHorizontal="true" />
 
                         <TextView
-                            android:id="@+id/textView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/mfg_img_download"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="3dp"
+                            android:textSize="12sp"
                             android:text="@string/app_download"
-                            android:textSize="12sp" />
+                            android:id="@+id/textView"
+                            android:layout_below="@+id/mfg_img_download"
+                            android:layout_marginTop="3dp"
+                            android:layout_centerHorizontal="true" />
                     </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -134,28 +136,28 @@
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="0.01dp"
-                android:background="@color/color_gray" />
-
+                android:background="@color/color_gray"
+                />
             <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="0.2"
-                android:orientation="horizontal">
+                android:layout_weight="0.2">
 
                 <TextView
-                    android:id="@+id/mfg_tv_intro"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="Small Text"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/mfg_tv_intro" />
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
+            android:orientation="vertical"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:layout_weight="0.06"
-            android:orientation="vertical"></LinearLayout>
+            android:layout_height="match_parent"></LinearLayout>
     </LinearLayout>
 </LinearLayout>

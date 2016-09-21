@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,12 +23,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="140dp">
 
-                <ImageView
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:src="@mipmap/ic_mf"
-                    android:scaleType="fitXY"
-                    android:id="@+id/imageView" />
+
+
+
+                <com.jude.rollviewpager.RollPagerView
+                    android:layout_width="wrap_content"
+                    android:layout_height="180dp"
+                    app:rollviewpager_play_delay="3000"
+                    android:id="@+id/viewpager"/>
+
 
             </LinearLayout>
 
@@ -43,8 +47,17 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/mf_mainlistview"
                     android:dividerHeight="5dp"
-                    android:divider="@color/color_bg"
+                    android:divider="@color/color_gray"
                     android:choiceMode="multipleChoice" />
+                    android:choiceMode="multipleChoice"
+                    />
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:id="@+id/mf_progressbar" />
+>>>>>>> 完成轮播+listview数据
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

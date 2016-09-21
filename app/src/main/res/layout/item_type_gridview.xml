@@ -23,7 +23,7 @@
         android:layout_marginTop="2dp"
         android:layout_marginBottom="20dp"
         tools:text="休闲"
-        android:textColor="@color/color_787878"
+        android:textColor="@color/color_tool"
         android:textSize="14sp" />
 
 </RelativeLayout>

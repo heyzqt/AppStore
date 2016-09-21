@@ -52,15 +52,12 @@ public class PopupWindowUtils {
 			 popupWindow.setFocusable(true);   
 			 popupWindow.setOutsideTouchable(true);
 			 popupWindow.showAtLocation(downview,Gravity.LEFT|Gravity.TOP, 0,300);
-			// popupWindow.setAnimationStyle(R.style.PopupAnimation);
 			 popupWindow.update();
 			 
-			//setting popupWindow d�����ʧ
-			 popupWindow.setTouchInterceptor(new View.OnTouchListener() {  
+			 popupWindow.setTouchInterceptor(new View.OnTouchListener() {
 		         @Override
 				public boolean onTouch(View v, MotionEvent event) {  
-		             /****   ��������popupwindow���ⲿ��popupwindowҲ����ʧ ****/  
-		             if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {  
+		             if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
 		            	 popupWindow.dismiss();  
 		                 return true;   
 		             }  

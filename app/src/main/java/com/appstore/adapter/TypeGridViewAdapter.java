@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.appstore.R;
+import com.appstore.StoreApplication;
 import com.appstore.entity.Type;
 import com.appstore.utils.ImgUtils;
 
@@ -65,26 +66,11 @@ public class TypeGridViewAdapter extends BaseAdapter {
         } else {
             vh = (ViewHolder) convertView.getTag();
         }
-//        if (mDatas.get(position).getImageUrl() != null &&!mDatas.get(position).getImageUrl().equals("")) {
-//            if (position==0){
-//                String url = "http://img5.imgtn.bdimg.com/it/u=642692494,1199448469&fm=21&gp=0.jpg";
-//                ImgUtils.setInterImg(convertView,url,vh.mImageView);
-//            }else{
-//                vh.mImageView.setImageResource(R.mipmap.category_game_4);
-//            }
-//            vh.mTvName.setText(mDatas.get(position).getName());
-//        }else{
-//            vh.mBackground.setBackgroundColor(mContext.getResources().getColor(R.color.color_transparent));
-//        }
-        if (position==0){
-            String url = "http://img5.imgtn.bdimg.com/it/u=642692494,1199448469&fm=21&gp=0.jpg";
-            ImgUtils.setInterImg(url,vh.mImageView);
-        }else if(position==1){
-            String url = "http://img4.imgtn.bdimg.com/it/u=2459295303,3320131763&fm=21&gp=0.jpg";
-            ImgUtils.setInterImg(url,vh.mImageView);
-        }
-        else{
-            vh.mImageView.setImageResource(R.mipmap.category_game_4);
+
+        if(mDatas.get(position).getImageUrl() != null &&!mDatas.get(position).getImageUrl().equals("")){
+            ImgUtils.setInterImg(StoreApplication.IP_ADDRESS+"image?name="+mDatas.get(position).getImageUrl(),vh.mImageView);
+        }else{
+            vh.mBackground.setBackgroundColor(mContext.getResources().getColor(R.color.color_transparent));
         }
         vh.mTvName.setText(mDatas.get(position).getName());
         return convertView;
