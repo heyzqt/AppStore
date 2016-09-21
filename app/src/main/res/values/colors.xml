@@ -10,4 +10,5 @@
     <color name="color_tool">#787878</color>
     <color name="color_black">#000</color>
     <color name="color_bg">#f6f6f6</color>
+    <color name="color_gray">#bfbfbf</color>
 </resources>

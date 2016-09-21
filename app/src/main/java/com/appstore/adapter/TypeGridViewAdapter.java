@@ -1,5 +1,6 @@
 package com.appstore.adapter;
 
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -9,7 +10,11 @@ import android.widget.BaseAdapter;
  */
 public class TypeGridViewAdapter extends BaseAdapter {
 
+    private Context mContext;
 
+    private List<> mDatas;
+
+    public TypeGridViewAdapter(){}
 
     @Override
     public int getCount() {

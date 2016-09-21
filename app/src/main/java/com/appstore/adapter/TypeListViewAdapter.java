@@ -68,7 +68,8 @@ public class TypeListViewAdapter extends BaseAdapter {
         } else {
             vh = (ViewHolder) convertView.getTag();
         }
-        vh.mTvTypeName.setText((CharSequence) mDatas.get(position).get("typename"));
+        vh.mTvTypeName.setText(mTypeLists.get(position));
+        TypeGridViewAdapter typeGridViewAdapter = new TypeGridViewAdapter();
         return convertView;
     }
 
