@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 
 import com.appstore.R;
+import com.appstore.StoreApplication;
 import com.appstore.adapter.ListViewAdapter;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.StaticPagerAdapter;
@@ -164,7 +165,7 @@ public class MainFragment extends Fragment {
             RequestParams params=new RequestParams();
             Log.i("123","run");
             params.put("index",String.valueOf(2));
-            client.get("http://192.168.0.83:8080/GooglePlayServer/home",params,new request());
+            client.get(StoreApplication.IP_ADDRESS+"home",params,new request());
 
         };
     }
