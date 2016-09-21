@@ -6,12 +6,19 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+
 import com.appstore.R;
 
 /**
  * Created by 张艳琴 on 2016/9/19.
  */
 public class TypeFragment extends Fragment {
+
+    private ListView mListView;
+
+    //private
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

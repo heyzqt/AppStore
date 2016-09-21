@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/colorWhite"
+    android:background="@color/color_white"
     tools:context=".activity.MainActivity">
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:background="@color/colorbg"
+        android:background="@color/color_bg"
         android:layout_height="54dp">
 
         <ImageView
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:text="应用市场"
             android:textSize="18dp"
-            android:textColor="@color/colorblack"
+            android:textColor="@color/color_black"
             android:layout_marginLeft="10dp"
             android:layout_centerVertical="true"
             android:layout_height="wrap_content" />
@@ -57,7 +57,7 @@
                     android:id="@+id/linear"
                     android:layout_width="fill_parent"
                     android:layout_height="40dp"
-                    android:background="@color/colorWhite"
+                    android:background="@color/color_white"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -130,7 +130,7 @@
                     android:layout_width="100dp"
                     android:layout_height="2dp"
                     android:layout_below="@+id/linear"
-                    android:background="@color/colorMain"
+                    android:background="@color/color_main"
                     android:scaleType="matrix" />
             </RelativeLayout>
         </com.appstore.widget.ObServerScrollView>

@@ -4,8 +4,9 @@ package com.appstore.entity;
  * Created by 张艳琴 on 2016/9/19.
  */
 public class AppInfo {
-    String name;
-    int id;
+
+    private String name;
+    private int id;
 
     public String getName() {
         return name;
@@ -23,4 +24,11 @@ public class AppInfo {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "AppInfo{" +
+                "name='" + name + '\'' +
+                ", id=" + id +
+                '}';
+    }
 }
