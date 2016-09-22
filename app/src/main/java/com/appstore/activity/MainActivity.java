@@ -1,5 +1,6 @@
 package com.appstore.activity;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -104,7 +105,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mPager.setCurrentItem(6);
                 break;
             case R.id.slide_menu:
-                initView2();
+               // initView2();
+                startActivity(new Intent(this,AppDetailsActvity.class));
                 break;
         }
     }

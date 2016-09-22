@@ -19,13 +19,13 @@ public class AppInfo {
     private String downloadUrl;
     private String des;
     private String author;
-    private String[] screen;
+    private String screen;
 
-    public String[] getScreen() {
+    public String getScreen() {
         return screen;
     }
 
-    public void setScreen(String[] screen) {
+    public void setScreen(String screen) {
         this.screen = screen;
     }
 
@@ -140,7 +140,7 @@ public class AppInfo {
                 ", downloadUrl='" + downloadUrl + '\'' +
                 ", des='" + des + '\'' +
                 ", author='" + author + '\'' +
-                ", screen=" + Arrays.toString(screen) +
+                ", screen='" + screen + '\'' +
                 '}';
     }
 }
