@@ -17,7 +17,7 @@ import java.io.File;
 /**
  * Created by XFT on 2016/9/20.
  */
-public class ImgLoader {
+public class imgLoader {
 
     public static String IMAGE_CACHE_PATH = "imageloader/Cache";
 
