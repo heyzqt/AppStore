@@ -6,15 +6,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.appstore.R;
-import com.appstore.adapter.SubjectAdapter;
 import com.appstore.tagview.OnTagClickListener;
 import com.appstore.tagview.Tag;
 import com.appstore.tagview.TagView;
@@ -47,11 +44,6 @@ public class RankFragment extends Fragment {
         return contentView;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
     private void findView(View v) {
         tagView = (TagView) v.findViewById(R.id.tagview);
         tagView.setOnTagClickListener(new OnTagClickListener() {
@@ -62,7 +54,6 @@ public class RankFragment extends Fragment {
         });
         //ADD TAG
         random = new Random();
-        //=this.getResources().getStringArray(R.array.continents);
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         String url = getResources().getString(R.string.ip_address) + "hot";
@@ -90,7 +81,6 @@ public class RankFragment extends Fragment {
             if (msg.what == 1) {
                 if (str != null) {
                     final String[] colors = getActivity().getResources().getStringArray(R.array.colors);
-                    final String[] contents = null;
                     JSONArray jsonArray = null;
                     try {
                         jsonArray = new JSONArray(str);
