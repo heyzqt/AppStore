@@ -1,6 +1,7 @@
 package com.appstore.widget;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -18,6 +19,8 @@ import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import com.appstore.R;
 
 import java.util.LinkedList;
 import java.util.Random;
@@ -202,7 +205,10 @@ public class KeywordsFlow extends FrameLayout implements OnGlobalLayoutListener{
             for (int i = 0; i < size; i++) {  
                 String keyword = vecKeywords.get(i);  
                 // 随机颜色  
-                int ranColor = 0xff000000 | random.nextInt(0x0077ffff);  
+                //int ranColor = 0xff000000 | random.nextInt(0x0077ffff);
+                //int ranColor = 0xFFF6F6F6 | random.nextInt(0x0092FF77);
+                final String[] colors = getResources().getStringArray(R.array.colors);
+                int ranColor = Color.parseColor(colors[i % colors.length]);
                 // 随机位置，糙值  
                 int xy[] = randomXY(random, listX, listY, xItem);  
                 // 随机字体大小  
