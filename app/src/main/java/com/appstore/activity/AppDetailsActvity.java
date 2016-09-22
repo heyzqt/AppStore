@@ -3,10 +3,12 @@ package com.appstore.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -16,10 +18,8 @@ import android.widget.Toast;
 import com.appstore.R;
 import com.appstore.StoreApplication;
 import com.appstore.adapter.SafeAdapter;
-import com.appstore.adapter.SubjectAdapter;
 import com.appstore.entity.AppInfo;
 import com.appstore.entity.Safe;
-import com.appstore.entity.Subject;
 import com.appstore.utils.ImgUtils;
 import com.appstore.widget.NoScrollListView;
 import com.loopj.android.http.AsyncHttpClient;
@@ -57,6 +57,9 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
     Button Btdownload;
     Button Btshare;
     AppInfo appinfo;
+    private ViewPager viewPager;
+    private ImageView[] mImageViews;
+    private int[] imgIdArray ;
 
     SafeAdapter safeAdapter;
     List<Safe> safeList = null;
@@ -84,6 +87,9 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
         Btdownload = (Button) findViewById(R.id.details_download);
         Btshare = (Button) findViewById(R.id.details_share);
         lv = (NoScrollListView) findViewById(R.id.safe_listview);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        viewPager.setPageMargin(16);
+        viewPager.setVisibility(View.GONE);
         appinfo = new AppInfo();
         initData();
         Ivdown1.setTag("off");
@@ -94,14 +100,12 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
         Btcollect.setOnClickListener(this);
         Btshare.setOnClickListener(this);
         Btdownload.setOnClickListener(this);
-
-
     }
 
     private void initData() {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
-        params.put("packageName", "com.mogujie");
+        params.put("packageName", "com.baidu.tieba");
         String url = getResources().getString(R.string.ip_address) + "detail";
         client.get(url, params, new AsyncHttpResponseHandler() {
             @Override
@@ -208,10 +212,39 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
                     Tvdownloadcount.setText("下载量:" + appinfo.getDownLoadNum());
                     Tvversion.setText("版本:" + appinfo.getVesion());
                     Tvdate.setText("时间:" + appinfo.getDate());
-                    Tvsize.setText("大小：" + new java.text.DecimalFormat("#.00").format((Double.parseDouble(appinfo.getSize()) / (1024 * 1024))) + "MB");
+                    Tvsize.setText("大小：" + new java.text.DecimalFormat("#.00").
+                            format((Double.parseDouble(appinfo.getSize()) / (1024 * 1024))) + "MB");
                     Tvdes.setText(appinfo.getDes());
                     Tvaurth.setText(appinfo.getAuthor());
                     ImgUtils.setInterImg(StoreApplication.IP_ADDRESS + "image?name=" + appinfo.getIconUrl(), Ivicon);
+
+                    //将图片装载到数组中
+
+                    JSONArray jsonArray = null;
+                    try {
+                        jsonArray = new JSONArray(appinfo.getScreen());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    mImageViews = new ImageView[jsonArray.length()];
+                    for(int i=0; i<mImageViews.length; i++){
+                        ImageView imageView = new ImageView(AppDetailsActvity.this);
+                        mImageViews[i] = imageView;
+
+                        ImgUtils.setInterImg(StoreApplication.IP_ADDRESS+"image?name="+jsonArray.optString(i),imageView);
+                        mImageViews[i].setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    }
+                    viewPager.setAdapter(new ScreenAdapter());
+                    viewPager.setCurrentItem((mImageViews.length) * 100);
+                    viewPager.setVisibility(View.VISIBLE);
+                    findViewById(R.id.ly).setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            return viewPager.dispatchTouchEvent(event);
+                        }
+                    });
+
                     if (safeList != null) {
                         switch (safeList.size()) {
                             case 0:
@@ -243,4 +276,37 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
             }
         }
     };
+
+
+    public class ScreenAdapter extends PagerAdapter {
+
+        @Override
+        public int getCount() {
+            return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public boolean isViewFromObject(View arg0, Object arg1) {
+            return arg0 == arg1;
+        }
+
+        @Override
+        public void destroyItem(View container, int position, Object object) {
+        }
+
+        /**
+         * 载入图片进去，用当前的position 除以 图片数组长度取余数是关键
+         */
+        @Override
+        public Object instantiateItem(View container, int position) {
+            try {
+                ImageView views=mImageViews[position % mImageViews.length];
+                views.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                ((ViewPager)container).addView(views, 0);
+            }catch(Exception e){
+            }
+            return mImageViews[position % mImageViews.length];
+        }
+
+    }
 }
