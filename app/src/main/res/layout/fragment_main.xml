@@ -47,17 +47,14 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/mf_mainlistview"
                     android:dividerHeight="5dp"
-                    android:divider="@color/color_gray"
+                    android:divider="@color/color_line"
                     android:choiceMode="multipleChoice" />
-                    android:choiceMode="multipleChoice"
-                    />
 
                 <ProgressBar
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:id="@+id/mf_progressbar" />
->>>>>>> 完成轮播+listview数据
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
