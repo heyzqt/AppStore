@@ -159,8 +159,6 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
             mImageLoader=ImageLoader.getInstance();
 
 
-            Log.i("127","listurlsize:"+listurl.size());
-
             for(int i=0;i<listurl.size();i++)
             {
 
