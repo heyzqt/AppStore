@@ -1,5 +1,6 @@
 package com.appstore.activity;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -14,9 +15,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.appstore.R;
 import com.appstore.adapter.MyPagerAdapter;
@@ -106,7 +105,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mPager.setCurrentItem(6);
                 break;
             case R.id.slide_menu:
-                initView2();
+               // initView2();
+                startActivity(new Intent(this,AppDetailsActvity.class));
                 break;
         }
     }
@@ -157,17 +157,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             position = arg0;
             int x = arg0 - oldPosition;
             currentX = oldX + x * (screenWidth / 4);
-            Log.d("Debug", currentX + ".......currentX");
             if (oldPosition < position) {
                 if (currentX + (screenWidth / 8) <= screenWidth) {//超出
-                    Log.d("Debug", "2222222222");
                     animation = new TranslateAnimation(oldX + scrollX, currentX + scrollX, 0, 0);
                     animation.setFillAfter(true);
                     animation.setDuration(100);
                     cursor.startAnimation(animation);
                     oldX = currentX;
                 } else {
-                    Log.d("Debug", "333333333333333");
                     animation = new TranslateAnimation(oldX + scrollX, currentX + scrollX, 0, 0);
                     animation.setFillAfter(true);
                     animation.setDuration(100);
@@ -198,8 +195,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else if (position < oldPosition) {
                 int width = screenWidth / 8;
                 if (currentX - width > 0) {
-                    Log.d("Debug", "111111111");
-                    Log.d("Debug", currentX + ".......currentX........." + oldX);
                     animation = new TranslateAnimation(oldX + scrollX, currentX + scrollX, 0, 0);
                     animation.setFillAfter(true);
                     animation.setDuration(100);
@@ -252,11 +247,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void initCursor(int tagNum) {
         cursorWidth = screenWidth / 4;
-        Log.d("Debug", cursorWidth + "....");
         DisplayMetrics dm = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(dm);
         offset = ((dm.widthPixels / tagNum) - cursorWidth) / 2;
-        Log.d("Debug", offset + "......offset........" + (dm.widthPixels / tagNum));
         cursor = (ImageView) findViewById(R.id.ivCursor);
         animation = new TranslateAnimation(0, offset, 0, 0);
         animation.setFillAfter(true);
@@ -277,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         View downView = (LinearLayout) view.findViewById(R.id.mLayout);
         // 启动popupWindow；
         PopupWindowUtils popu = new PopupWindowUtils(MainActivity.this,
-                screenWidth, screenHeigh - 100, downView, view);
+                screenWidth, screenHeigh - 130, downView, view);
        // center = (TextView) view.findViewById(R.id.center);// 个人中心
     }
 

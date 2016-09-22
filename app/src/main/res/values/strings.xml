@@ -1,9 +1,7 @@
 <resources>
     <string name="app_name">AppStore</string>
-
     <string name="app_download">下载</string>
-
     <string name="app_mfg_http">下载</string>
-
+    <string name="ip_address">http://localhost:8090/</string>
 
 </resources>
