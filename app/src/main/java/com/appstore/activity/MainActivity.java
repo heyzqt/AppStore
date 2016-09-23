@@ -105,15 +105,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mPager.setCurrentItem(6);
                 break;
             case R.id.slide_menu:
-//                if(Ivmenu.getTag().equals("on")){
-//                    Ivmenu.setImageResource(R.mipmap.titlebar_back_btn);
-//                    Ivmenu.setTag("off");
-//                }else{
-//                    Ivmenu.setImageResource(R.mipmap.ic_setting);
-//                    Ivmenu.setTag("on");
-//                }
-                initView2();
-               // startActivity(new Intent(this,AppDetailsActvity.class));
+              //  initView2();
+                startActivity(new Intent(this,CollectActivity.class));
                 break;
         }
     }

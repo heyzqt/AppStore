@@ -1,25 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 <ScrollView
     android:layout_width="match_parent"
+    android:id="@+id/scroll_views"
+    android:scrollbars="none"
     android:layout_height="match_parent">
-    <com.appstore.widget.tagview.TagView
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:id="@+id/tagview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:lineMargin="5dp"
-        app:tagMargin="10dp"
-        app:textPaddingBottom="3dp"
-        app:textPaddingLeft="10dp"
-        app:textPaddingRight="10dp"
-        app:textPaddingTop="3dp">
- </com.appstore.widget.tagview.TagView>
+
 </ScrollView>
 </LinearLayout>
