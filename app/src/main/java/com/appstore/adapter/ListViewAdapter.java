@@ -8,9 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RatingBar;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,7 +80,7 @@ public class ListViewAdapter extends BaseAdapter implements View.OnClickListener
 
 
 
-            imgLoader loader=new imgLoader();
+            ImgLoaders loader=new ImgLoaders();
             loader.initImageLoader(context);
  //           initImageLoader(context);
             mImageLoader = ImageLoader.getInstance();
@@ -104,7 +102,7 @@ public class ListViewAdapter extends BaseAdapter implements View.OnClickListener
         {
             holder=(ViewHolder)convertView.getTag();
             holder.img_appimg.setScaleType(ImageView.ScaleType.FIT_XY);
-            imgLoader loader=new imgLoader();
+            ImgLoaders loader=new ImgLoaders();
             loader.initImageLoader(context);
             mImageLoader = ImageLoader.getInstance();
             mImageLoader.displayImage("http://localhost:8090/image?name="+listdata.get(position).get("iconUrl").toString(),holder.img_appimg,loader.getOption()
