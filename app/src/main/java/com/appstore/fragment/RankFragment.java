@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.appstore.R;
-import com.appstore.tagview.OnTagClickListener;
-import com.appstore.tagview.Tag;
-import com.appstore.tagview.TagView;
+import com.appstore.widget.tagview.OnTagClickListener;
+import com.appstore.widget.tagview.Tag;
+import com.appstore.widget.tagview.TagView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;

@@ -1,4 +1,4 @@
-package com.appstore.tagview;
+package com.appstore.widget.tagview;
 
 /**
  * listener for tag delete

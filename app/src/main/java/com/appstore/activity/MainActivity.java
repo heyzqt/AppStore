@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         screenWidth = display.getWidth();
         Ivmenu= (ImageView) findViewById(R.id.slide_menu);
         Ivmenu.setOnClickListener(this);
+        Ivmenu.setTag("on");
         init();
         initCursor(6);
     }
@@ -80,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int[] location1 = new int[2];
         cursor.getLocationOnScreen(location1);
         currentX = location[0] + offset;
-      //  Toast.makeText(getApplicationContext(), currentX + "", Toast.LENGTH_SHORT).show();
 
         switch (v.getId()) {
             case R.id.tvTag1:
@@ -105,8 +105,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mPager.setCurrentItem(6);
                 break;
             case R.id.slide_menu:
-               // initView2();
-                startActivity(new Intent(this,AppDetailsActvity.class));
+//                if(Ivmenu.getTag().equals("on")){
+//                    Ivmenu.setImageResource(R.mipmap.titlebar_back_btn);
+//                    Ivmenu.setTag("off");
+//                }else{
+//                    Ivmenu.setImageResource(R.mipmap.ic_setting);
+//                    Ivmenu.setTag("on");
+//                }
+                initView2();
+               // startActivity(new Intent(this,AppDetailsActvity.class));
                 break;
         }
     }

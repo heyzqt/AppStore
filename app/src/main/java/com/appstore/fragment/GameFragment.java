@@ -1,6 +1,7 @@
 package com.appstore.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.appstore.R;
+import com.appstore.activity.AppDetailsActvity;
 import com.appstore.adapter.ListViewAdapter;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -137,10 +139,10 @@ public class GameFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Toast.makeText(getActivity(),"跳转",Toast.LENGTH_SHORT).show();
-/*        Intent intent=new Intent(getActivity(), AppDetailsActvity.class);
+        Intent intent=new Intent(getActivity(), AppDetailsActvity.class);
         Bundle bundle=new Bundle();
         bundle.putString("comname",listdata.get(position).get("packagename").toString());
         intent.putExtras(bundle);
-        startActivity(intent);*/
+        startActivity(intent);
     }
 }

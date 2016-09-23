@@ -7,7 +7,7 @@
 <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <com.appstore.tagview.TagView
+    <com.appstore.widget.tagview.TagView
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:id="@+id/tagview"
@@ -20,6 +20,6 @@
         app:textPaddingLeft="10dp"
         app:textPaddingRight="10dp"
         app:textPaddingTop="3dp">
- </com.appstore.tagview.TagView>
+ </com.appstore.widget.tagview.TagView>
 </ScrollView>
 </LinearLayout>

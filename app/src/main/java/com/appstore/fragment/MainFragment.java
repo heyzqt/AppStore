@@ -2,6 +2,7 @@ package com.appstore.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.appstore.R;
+import com.appstore.activity.AppDetailsActvity;
 import com.appstore.adapter.ImgLoaders;
 import com.appstore.adapter.ListViewAdapter;
 import com.appstore.utils.ImgUtils;
@@ -279,11 +281,11 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Toast.makeText(getActivity(),"跳转",Toast.LENGTH_SHORT).show();
-/*        Intent intent=new Intent(getActivity(), AppDetailsActvity.class);
+       Intent intent=new Intent(getActivity(), AppDetailsActvity.class);
         Bundle bundle=new Bundle();
         bundle.putString("comname",listdata.get(position).get("packagename").toString());
         intent.putExtras(bundle);
-        startActivity(intent);*/
+        startActivity(intent);
 
 
 

@@ -1,18 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="continents">
-        <item>QQ</item>
-        <item>360手机助手</item>
-        <item>美柚</item>
-        <item>微信</item>
-        <item>天天动听</item>
-        <item>美图秀秀</item>
-        <item>淘宝</item>
-        <item>酷狗音乐</item>
-        <item>天猫</item>
-        <item>APP_Store</item>
-        <item>种草草</item>
-    </string-array>
     <string-array name="colors">
         <item>#00BFFF</item>
         <item>#E91E63</item>
