@@ -47,8 +47,10 @@
         android:layout_below="@+id/deatils_01">
 
         <LinearLayout
+            android:id="@+id/ly"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clipChildren="false"
             android:orientation="vertical">
 
 
@@ -211,28 +213,41 @@
                 android:layout_height="0.6dp"
                 android:layout_marginTop="4dp"
                 android:background="@color/color_line"></View>
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="5dp"
-        android:text="简介"
-        android:textColor="@color/color_black"
-        android:textSize="18dp" />
-    <ImageView
-        android:id="@+id/detals_down1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="15dp"
-        android:padding="5dp"
-        android:src="@mipmap/arrow_down" />
-</RelativeLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_marginTop="15dp"
+                android:clipChildren="false"
+                android:layout_width="match_parent"
+                android:layout_marginRight="110dp"
+                android:layout_marginLeft="110dp"
+                android:layout_marginBottom="10dp"
+                android:layout_height="164dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="5dp"
+                    android:text="简介"
+                    android:textColor="@color/color_black"
+                    android:textSize="18dp" />
+
+                <ImageView
+                    android:id="@+id/detals_down1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="15dp"
+                    android:padding="5dp"
+                    android:src="@mipmap/arrow_down" />
+            </RelativeLayout>
 
 
             <TextView
@@ -251,10 +266,10 @@
                 android:id="@+id/details_aurth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="15dp"
                 android:text="有缘网" />
 
 
