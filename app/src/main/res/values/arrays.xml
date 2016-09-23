@@ -3,8 +3,14 @@
     <string-array name="colors">
         <item>#00BFFF</item>
         <item>#E91E63</item>
+        <item>#FFA500</item>
         <item>#F44336</item>
         <item>#9C27B0</item>
+        <item>#32CD32</item>
+        <item>#D2691E</item>
         <item>#673AB7</item>
+        <item>#DC143C</item>
+
+
     </string-array>
 </resources>

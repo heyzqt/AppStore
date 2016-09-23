@@ -49,7 +49,6 @@ public class RankFragment extends Fragment {
     private void findView(View v) {
 
         scrollView = (ScrollView) v.findViewById(R.id.scroll_views);
-      //  mFlowLayout = (FlowLayout) v.findViewById(R.id.id_flowlayout);
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         String url = getResources().getString(R.string.ip_address) + "hot";
@@ -104,11 +103,7 @@ public class RankFragment extends Fragment {
                         textView.setPadding(padding1, padding1, padding1, padding1);
                         textView.setTextColor(Color.WHITE);
                         //随机创建颜色值
-//                        int r = 30 + random.nextInt(210);
-//                        int g = 30 + random.nextInt(210);
-//                        int b = 30 + random.nextInt(210);
-                        //按下后的偏白的背景色
-                   //     int defaultColor = Color.rgb(r, g, b);
+
                         ShapeDrawable backgroundDrawable = new ShapeDrawable(new RoundRectShape(new float[] {5, 5, 5, 5, 5, 5, 5, 5},
                                 null, null));
                     //    backgroundDrawable.getPaint().setColor( defaultColor);
