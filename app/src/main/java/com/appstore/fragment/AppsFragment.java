@@ -1,12 +1,12 @@
 package com.appstore.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.appstore.R;
+import com.appstore.activity.AppDetailsActvity;
 import com.appstore.adapter.ListViewAdapter;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -113,23 +114,25 @@ public class AppsFragment extends Fragment implements AdapterView.OnItemClickLis
         mlistview.stopLoadMore();
         mlistview.setRefreshTime("刚刚");
     }
+    //刷新
         @Override
     public void onRefresh() {
 
-            Toast.makeText(getActivity(),"已经是最新的了",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),"已经是最新的了!",Toast.LENGTH_SHORT).show();
             onLoad();
 
         }
 
+    //加载更多
     @Override
     public void onLoadMore() {
 
         index=index+1;
-        Log.i("127"," onLoadMore");
         new Thread(new loadHttpData(1)).start();
 
     }
 
+    //加载网络数据
     private class loadHttpData implements  Runnable
     {
 

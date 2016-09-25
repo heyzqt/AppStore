@@ -1,12 +1,12 @@
 package com.appstore.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.appstore.R;
+import com.appstore.activity.AppDetailsActvity;
 import com.appstore.adapter.ListViewAdapter;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -47,7 +48,6 @@ public class GameFragment extends Fragment implements AdapterView.OnItemClickLis
 
             try {
                   JSONArray jsonArray=new JSONArray(j);
-                Log.i("128","leng:"+String.valueOf(jsonArray.length()));
                 for (int i = 0; i <jsonArray.length();i++) {
                     HashMap<String, Object> map = new HashMap<String, Object>();
                     JSONObject object = jsonArray.getJSONObject(i);
@@ -119,6 +119,7 @@ public class GameFragment extends Fragment implements AdapterView.OnItemClickLis
         return listdata;
     }
 
+    //刷新
     @Override
     public void onRefresh() {
 
@@ -126,15 +127,16 @@ public class GameFragment extends Fragment implements AdapterView.OnItemClickLis
         onLoad();
     }
 
+    //加载更多
     @Override
     public void onLoadMore() {
 
         index=index+1;
-        Log.i("127"," onLoadMore");
         new Thread(new loadLocalData(1)).start();
     }
 
 
+    //加载网络数据
     private class loadLocalData implements  Runnable
     {
 
@@ -167,7 +169,6 @@ public class GameFragment extends Fragment implements AdapterView.OnItemClickLis
                 bundle.putInt("changcode",code);
                 bundle.putString("Json",jsonArray.toString());
                 msg.setData(bundle);
-                Log.i("127","gf:sendMessage");
                 handle.sendMessage(msg);
 
 
