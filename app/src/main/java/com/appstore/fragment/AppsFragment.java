@@ -1,6 +1,5 @@
 package com.appstore.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,13 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.appstore.R;
-import com.appstore.activity.AppDetailsActvity;
 import com.appstore.adapter.ListViewAdapter;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -34,10 +30,11 @@ import java.util.HashMap;
 /**
  * Created by 张艳琴 on 2016/9/19.
  */
-public class AppsFragment extends Fragment implements AdapterView.OnItemClickListener{
-    private ListView ap_listview;
+public class AppsFragment extends Fragment implements AdapterView.OnItemClickListener,XListView2.IXListViewListener{
+    private XListView2 mlistview;
     private ProgressBar af_pb;
     private int index=1;
+    ListViewAdapter adapter1;
     ArrayList<HashMap<String,Object>> listdata=new ArrayList<HashMap<String,Object>>();
     private Handler handle=new Handler(){
         @Override
@@ -45,62 +42,17 @@ public class AppsFragment extends Fragment implements AdapterView.OnItemClickLis
             super.handleMessage(msg);
             Bundle bundle=msg.getData();
             int code=bundle.getInt("changcode");
-            if(code==1)
-            {
 
+            String j=bundle.getString("Json");
 
-                ap_listview.setVisibility(View.VISIBLE);
-                af_pb.setVisibility(View.GONE);
-                ListViewAdapter adapter1=new ListViewAdapter(getActivity(),listdata);
-                ap_listview.setAdapter(adapter1);
-
-            }
-        }
-    };
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.fragment_apps, null);
-        initView(contentView);
-        new Thread(new loadHttpData()).start();
-        return contentView;
-    }
-    public void initView(View v)
-    {
-        ap_listview=(ListView)v.findViewById(R.id.ap_listview);
-        af_pb=(ProgressBar)v.findViewById(R.id.ap_progressBar);
-        ap_listview.setVisibility(View.GONE);
-        af_pb.setVisibility(View.VISIBLE);
-        ap_listview.setOnItemClickListener(this);
-    }
-    public ArrayList<HashMap<String,Object>> getListData()
-    {
-        return listdata;
-    }
-    private class loadHttpData implements  Runnable
-    {
-
-        @Override
-        public void run() {
-            Looper.prepare();
-            AsyncHttpClient client=new AsyncHttpClient();
-            RequestParams params=new RequestParams();
-            params.put("index",String.valueOf(index));
-            client.get("http://localhost:8090/app",params,new request());
-            Looper.loop();
-        }
-    }
-
-    class request extends JsonHttpResponseHandler {
-        @Override
-        public void onSuccess(JSONArray jsonArray) {
-            super.onSuccess(jsonArray);
             try {
-                for (int i = 0; i < jsonArray.length(); i++) {
+                JSONArray jsonArray=new JSONArray(j);
+                for (int i = 0; i <jsonArray.length(); i++) {
                     HashMap<String, Object> map = new HashMap<String, Object>();
                     JSONObject object = jsonArray.getJSONObject(i);
                     map.put("id", object.get("id").toString());
                     map.put("name", object.get("name").toString());
+
                     //获取包名
                     map.put("packagename", object.get("packageName").toString());
                     map.put("iconUrl", object.get("iconUrl"));
@@ -109,16 +61,112 @@ public class AppsFragment extends Fragment implements AdapterView.OnItemClickLis
                     map.put("downloadUrl", object.get("downloadUrl"));
                     map.put("intro", object.get("des"));
                     listdata.add(map);
+
                 }
-                Message msg=new Message();
-                Bundle bundle=new Bundle();
-                bundle.putInt("changcode",1);
-                msg.setData(bundle);
-                handle.sendMessage(msg);
             }
-            catch (JSONException e) {
+            catch (JSONException e)
+            {
+
                 e.printStackTrace();
             }
+
+            if(code==0) {
+               mlistview.setVisibility(View.VISIBLE);
+                af_pb.setVisibility(View.GONE);
+                adapter1 = new ListViewAdapter(getActivity(), listdata);
+               mlistview.setAdapter(adapter1);
+            }
+            else
+            {
+                adapter1.notifyDataSetChanged();
+                onLoad();
+            }
+
+        }
+    };
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View contentView = inflater.inflate(R.layout.fragment_apps, null);
+        initView(contentView);
+        new Thread(new loadHttpData(0)).start();
+        return contentView;
+    }
+    public void initView(View v)
+    {
+        mlistview=(XListView2)v.findViewById(R.id.ap_listview);
+        mlistview.setPullLoadEnable(true);
+        mlistview.setPullRefreshEnable(true);
+        mlistview.setXListViewListener(this);
+        af_pb=(ProgressBar)v.findViewById(R.id.ap_progressBar);
+        mlistview.setVisibility(View.GONE);
+        af_pb.setVisibility(View.VISIBLE);
+       mlistview.setOnItemClickListener(this);
+    }
+    public ArrayList<HashMap<String,Object>> getListData()
+    {
+        return listdata;
+    }
+
+    private void onLoad() {
+        mlistview.stopRefresh();
+        mlistview.stopLoadMore();
+        mlistview.setRefreshTime("刚刚");
+    }
+        @Override
+    public void onRefresh() {
+
+            Toast.makeText(getActivity(),"已经是最新的了",Toast.LENGTH_SHORT).show();
+            onLoad();
+
+        }
+
+    @Override
+    public void onLoadMore() {
+
+        index=index+1;
+        Log.i("127"," onLoadMore");
+        new Thread(new loadHttpData(1)).start();
+
+    }
+
+    private class loadHttpData implements  Runnable
+    {
+
+        private int code;
+        public loadHttpData(int code)
+        {
+            this.code=code;
+        }
+        @Override
+        public void run() {
+            Looper.prepare();
+            AsyncHttpClient client=new AsyncHttpClient();
+            RequestParams params=new RequestParams();
+            params.put("index",String.valueOf(index));
+            client.get("http://localhost:8090/app",params,new request(code));
+            Looper.loop();
+        }
+    }
+
+    class request extends JsonHttpResponseHandler {
+        private int code;
+        public  request(int code)
+        {
+            this.code=code;
+        }
+        @Override
+        public void onSuccess(JSONArray jsonArray) {
+            super.onSuccess(jsonArray);
+
+                Message msg=new Message();
+                Bundle bundle=new Bundle();
+                bundle.putInt("changcode",code);
+                bundle.putString("Json",jsonArray.toString());
+                bundle.putString("json",jsonArray.toString());
+                msg.setData(bundle);
+                handle.sendMessage(msg);
+
         }
 
     }

@@ -43,17 +43,18 @@
                 android:focusableInTouchMode="true"
                 android:layout_height="match_parent">
 
-                <ListView
+
+
+
+                <com.appstore.fragment.XListView
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/mf_mainlistview"
-
                     android:dividerHeight="5dp"
-
                     android:divider="#eeeeee"
                    />
 
-                    />
 
                 <ProgressBar
                     android:layout_width="wrap_content"

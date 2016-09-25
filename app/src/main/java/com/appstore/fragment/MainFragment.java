@@ -4,8 +4,6 @@ package com.appstore.fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,10 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.appstore.R;
@@ -36,19 +31,20 @@ import com.loopj.android.http.RequestParams;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 /**
  * Created by 张艳琴 on 2016/9/19.
  */
-public class MainFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class MainFragment extends Fragment implements AdapterView.OnItemClickListener,XListView.IXListViewListener {
 
-    private ListView mfg_listview;
+   // private ListView mfg_listview;
 
+    private ListViewAdapter adapter;
+    private XListView mListView;
     public Context context;
     private ImageLoader mImageLoader;
     ArrayList<HashMap<String,Object>> listdata=new ArrayList<HashMap<String,Object>>();
@@ -63,20 +59,63 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             Bundle bundle=msg.getData();
-            int code=bundle.getInt("changcode");
-            if(code==1)
-            {
+            String j=bundle.getString("Json");
+            JSONObject  jsonObject= null;
+            try {
+                jsonObject = new JSONObject(j);
+                if (index == 0) {
 
-                mfg_listview.setVisibility(View.VISIBLE);
-                mf_pb.setVisibility(View.GONE);
-                ListViewAdapter adapter=new ListViewAdapter(getActivity(),listdata);
-                mfg_listview.setAdapter(adapter);
-                setPagerView();
-                setListViewHeightBasedOnChildren(mfg_listview);
+                    Log.i("127", "jsonArray1");
+                    JSONArray jsonArray1 = jsonObject.getJSONArray("picture");
+                    Log.i("127", jsonArray1.toString());
+                    for (int i = 0; i < jsonArray1.length(); i++) {
+                        HashMap<String, Object> map = new HashMap<String, Object>();
+                        map.put("pagerimageurl", jsonArray1.get(i).toString());
+                        listurl.add(map);
+                    }
+                }
 
+                JSONArray jsonArray = jsonObject.getJSONArray("list");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    HashMap<String, Object> map = new HashMap<String, Object>();
+
+                    JSONObject object = jsonArray.getJSONObject(i);
+
+                    map.put("id", object.get("id").toString());
+                    map.put("name", object.get("name").toString());
+                    Log.i("127",object.get("name").toString());
+                    //获取包名
+                    map.put("packagename", object.get("packageName").toString());
+                    map.put("iconUrl", object.get("iconUrl"));
+                    map.put("stars", object.get("stars").toString());
+                    map.put("size", object.get("size").toString());
+                    map.put("downloadUrl", object.get("downloadUrl"));
+                    map.put("intro", object.get("des"));
+                    listdata.add(map);
+                }
             }
 
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+            if(index==0) {
+
+                    mListView.setVisibility(View.VISIBLE);
+                    mf_pb.setVisibility(View.GONE);
+                     Log.i("127","handler");
+                    adapter = new ListViewAdapter(getActivity(),listdata);
+                    Log.i("127","handler2");
+                    mListView.setAdapter(adapter);
+                    setPagerView();
+            }
+            else
+            {
+                adapter.notifyDataSetChanged();
+                onLoad();
+            }
         }
+
     };
     @Nullable
     @Override
@@ -87,38 +126,26 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         new Thread(new loadHttpData()).start();
         return contentView;
     }
-    //计算listview的高度
-    private void setListViewHeightBasedOnChildren(ListView listView) {
-        // 获取ListView对应的Adapter
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            return;
-        }
-        int totalHeight = 0;
-        for (int i = 0, len = listAdapter.getCount(); i < len; i++) {
-            // listAdapter.getCount()返回数据项的数目
-            View listItem = listAdapter.getView(i, null,listView);
-            // 计算子项View 的宽高
-            listItem.measure(0, 0);
-            // 统计所有子项的总高度
-            totalHeight += listItem.getMeasuredHeight();
-        }
 
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = (totalHeight+ (listView.getHeight() * (listAdapter.getCount())));
-        // listView.getDividerHeight()获取子项间分隔符占用的高度
-        // params.height最后得到整个ListView完整显示需要的高度
-        listView.setLayoutParams(params);
-    }
     public  void initView(View v)
     {
         this.context=getActivity();
-        mfg_listview= (ListView)v.findViewById(R.id.mf_mainlistview);
+        mListView= (XListView)v.findViewById(R.id.mf_mainlistview);
+        mListView.setPullLoadEnable(true);
+        mListView.setPullRefreshEnable(true);
+        mListView.setXListViewListener(this);
         mf_pb=(ProgressBar)v.findViewById(R.id.mf_progressbar);
         rollpager=(RollPagerView) v.findViewById(R.id.viewpager);
-        mfg_listview.setVisibility(View.GONE);
+        mListView.setVisibility(View.GONE);
         mf_pb.setVisibility(View.VISIBLE);
-        mfg_listview.setOnItemClickListener(this);
+        mListView.setOnItemClickListener(this);
+    }
+
+
+    private void onLoad() {
+        mListView.stopRefresh();
+        mListView.stopLoadMore();
+        mListView.setRefreshTime("刚刚");
     }
 
     public void setPagerView()
@@ -129,7 +156,8 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
        //设置透明度
         rollpager.setAnimationDurtion(500);
         //设置适配器
-        new Thread(new loadImage()).start();
+        rollpager.setAdapter(new TestNormalAdapter(context));
+
 
 
         //设置指示器（顺序依次）
@@ -143,8 +171,22 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         //mRollViewPager.setHintView(null);
     }
 
+    @Override
+    public void onRefresh() {
+        Toast.makeText(getActivity(),"已经是最新的了",Toast.LENGTH_SHORT).show();
+        onLoad();
 
-     private class TestNormalAdapter extends StaticPagerAdapter
+    }
+
+    @Override
+    public void onLoadMore() {
+        index=index+1;
+        Log.i("127"," onLoadMore");
+        new Thread(new loadHttpData()).start();
+    }
+
+
+    private class TestNormalAdapter extends StaticPagerAdapter
     {
 
         public Context t_context;
@@ -184,15 +226,17 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
     }
 
 
-    //异步访问数据，加载轮播数据
-    private class loadImage implements Runnable
-    {
 
-        @Override
-        public void run() {
-            rollpager.setAdapter(new TestNormalAdapter(context));
-        }
-    }
+//    //异步访问数据，加载轮播数据
+//    private class loadImage implements Runnable
+//    {
+//
+//        @Override
+//        public void run() {
+//
+//            new TestNormalAdapter(context);
+//        }
+//    }
     public ArrayList<HashMap<String,Object>> getListData()
     {
         return listdata;
@@ -219,54 +263,13 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         @Override
         public void onSuccess(JSONObject jsonObject) {
             super.onSuccess(jsonObject);
-
-            try {
-                Log.i("127","jsonArray1");
-                JSONArray jsonArray1 = jsonObject.getJSONArray("picture");
-                Log.i("127",jsonArray1.toString());
-                for (int i = 0;i<jsonArray1.length();i++)
-                {
-                    HashMap<String,Object> map=new HashMap<String,Object>();
-                    map.put("pagerimageurl",jsonArray1.get(i).toString());
-                    listurl.add(map);
-                }
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            try {
-                JSONArray jsonArray=jsonObject.getJSONArray("list");
-                for(int i=0;i<jsonArray.length();i++)
-                {
-                    HashMap<String,Object> map=new HashMap<String,Object>();
-
-                    JSONObject object=jsonArray.getJSONObject(i);
-
-                    map.put("id",object.get("id").toString());
-                    map.put("name",object.get("name").toString());
-                    //获取包名
-                    map.put("packagename",object.get("packageName").toString());
-                    map.put("iconUrl",object.get("iconUrl"));
-                    map.put("stars",object.get("stars").toString());
-                    map.put("size",object.get("size").toString());
-                    map.put("downloadUrl",object.get("downloadUrl"));
-                    map.put("intro",object.get("des"));
-                    listdata.add(map);
-
-                }
-                Message msg=new Message();
-                Bundle bundle=new Bundle();
-                bundle.putInt("changcode",1);
-                msg.setData(bundle);
-                Log.i("124","sendMessage");
-                handle.sendMessage(msg);
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
+                    Message msg = new Message();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("changcode", 1);
+                    bundle.putString("Json",jsonObject.toString());
+                    msg.setData(bundle);
+                    Log.i("124", "sendMessage");
+                    handle.sendMessage(msg);
         }
 
         @Override
