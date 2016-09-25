@@ -28,7 +28,7 @@ public class StoreApplication extends Application {
         super.onCreate();
         IP_ADDRESS = getResources().getString(R.string.ip_address);
         initImageLoader();
-    }
+    };
 
     private void initImageLoader() {
         File cacheDir = com.nostra13.universalimageloader.utils.StorageUtils

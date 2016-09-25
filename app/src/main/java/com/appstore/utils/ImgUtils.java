@@ -42,4 +42,15 @@ public class ImgUtils {
                 options);
         img.setScaleType(ImageView.ScaleType.CENTER_CROP);
     }
+    public static void setInterImg1(String imgurl, ImageView img,int ids) {
+        mImageLoader = ImageLoader.getInstance();
+        options = new DisplayImageOptions.Builder()
+                .showStubImage(ids)
+                .showImageForEmptyUri(ids)
+                .showImageOnFail(ids)
+                .cacheInMemory(true).cacheOnDisc(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .imageScaleType(ImageScaleType.EXACTLY).build();
+        addDynamicView(imgurl, img);
+    }
 }

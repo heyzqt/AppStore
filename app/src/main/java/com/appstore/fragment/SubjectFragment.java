@@ -1,6 +1,5 @@
 package com.appstore.fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,9 +14,7 @@ import android.widget.Toast;
 
 import com.appstore.R;
 import com.appstore.adapter.SubjectAdapter;
-import com.appstore.adapter.TypeListViewAdapter;
 import com.appstore.entity.Subject;
-import com.appstore.tagview.Tag;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -26,11 +23,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by 张艳琴 on 2016/9/19.

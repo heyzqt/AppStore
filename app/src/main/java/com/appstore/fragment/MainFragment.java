@@ -2,6 +2,7 @@ package com.appstore.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,8 +21,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.appstore.R;
+import com.appstore.activity.AppDetailsActvity;
+import com.appstore.adapter.ImgLoaders;
 import com.appstore.adapter.ListViewAdapter;
-import com.appstore.adapter.imgLoader;
+import com.appstore.utils.ImgUtils;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.StaticPagerAdapter;
 import com.jude.rollviewpager.hintview.ColorPointHintView;
@@ -153,7 +156,7 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
 
         //设置播放时间间隔
         rollpager.setPlayDelay(2000);
-       //设置透明度
+        //设置透明度
         rollpager.setAnimationDurtion(500);
         //设置适配器
         rollpager.setAdapter(new TestNormalAdapter(context));
@@ -161,13 +164,13 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
 
 
         //设置指示器（顺序依次）
-       //自定义指示器图片
+        //自定义指示器图片
         //设置圆点指示器颜色
-       //设置文字指示器
+        //设置文字指示器
         //隐藏指示器
-       //mRollViewPager.setHintView(new IconHintView(this,R.drawable.point_focus,R.drawable.point_normal));
-       rollpager.setHintView(new ColorPointHintView(getActivity(),Color.YELLOW,Color.WHITE));
-        //mRollViewPager.setHintView(new TextHintView(this));
+        //mRollViewPager.setHintView(new IconHintView(this,R.drawable.point_focus,R.drawable.point_normal));
+        rollpager.setHintView(new ColorPointHintView(getActivity(),Color.YELLOW,Color.WHITE));
+        //mRollViewPager.setHintView(new TextHintView(this));
         //mRollViewPager.setHintView(null);
     }
 
@@ -190,13 +193,13 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
     {
 
         public Context t_context;
-        public imgLoader loader;
+        public ImgLoaders loader;
         private Bitmap bit[]=new Bitmap[listurl.size()];
         public  TestNormalAdapter(Context context)
         {
 
             t_context=context;
-            loader=new imgLoader();
+            loader=new ImgLoaders();
             loader.initImageLoader(t_context);
             mImageLoader=ImageLoader.getInstance();
 
@@ -216,7 +219,7 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
             view.setImageBitmap(bit[position]);
             view.setScaleType(ImageView.ScaleType.CENTER_CROP);
             view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));
-           return view;
+            return view;
         }
 
         @Override
@@ -242,7 +245,7 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         return listdata;
     }
 
-   private class loadHttpData implements  Runnable
+    private class loadHttpData implements  Runnable
     {
 
         @Override
@@ -283,11 +286,14 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Toast.makeText(getActivity(),"跳转",Toast.LENGTH_SHORT).show();
-/*        Intent intent=new Intent(getActivity(), AppDetailsActvity.class);
+       Intent intent=new Intent(getActivity(), AppDetailsActvity.class);
         Bundle bundle=new Bundle();
         bundle.putString("comname",listdata.get(position).get("packagename").toString());
         intent.putExtras(bundle);
-        startActivity(intent);*/
+        startActivity(intent);
+
+
+
     }
 
 }

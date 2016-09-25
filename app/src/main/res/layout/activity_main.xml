@@ -129,7 +129,7 @@
 
                 <ImageView
                     android:id="@+id/ivCursor"
-                    android:layout_width="80dp"
+                    android:layout_width="100dp"
                     android:layout_height="2dp"
                     android:layout_below="@+id/linear"
                     android:layout_weight="1"

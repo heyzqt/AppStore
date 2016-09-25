@@ -59,7 +59,6 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
     AppInfo appinfo;
     private ViewPager viewPager;
     private ImageView[] mImageViews;
-    private int[] imgIdArray ;
 
     SafeAdapter safeAdapter;
     List<Safe> safeList = null;
@@ -88,7 +87,7 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
         Btshare = (Button) findViewById(R.id.details_share);
         lv = (NoScrollListView) findViewById(R.id.safe_listview);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        viewPager.setPageMargin(16);
+        viewPager.setPageMargin(20);
         viewPager.setVisibility(View.GONE);
         appinfo = new AppInfo();
         initData();
@@ -105,7 +104,7 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
     private void initData() {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
-        params.put("packageName", "com.baidu.tieba");
+        params.put("packageName",getIntent().getStringExtra("comname"));
         String url = getResources().getString(R.string.ip_address) + "detail";
         client.get(url, params, new AsyncHttpResponseHandler() {
             @Override
@@ -143,16 +142,13 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
                     Message msg = Message.obtain();
                     msg.what = 1;
                     handler.sendEmptyMessage(1);
-                    Log.e("zyq---", s);
                 } catch (JSONException e) {
-                    Log.e("zyq---Jsonjiaxi", e + "");
                     e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(Throwable throwable, String s) {
-                Log.e("zyq---网络连接失败", s);
                 Toast.makeText(AppDetailsActvity.this, "网络连接失败", Toast.LENGTH_LONG).show();
                 super.onFailure(throwable, s);
             }
@@ -180,7 +176,7 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
             case R.id.detals_down1://展开详细描述
                 if (Ivdown1.getTag().equals("off")) {
                     Ivdown1.setImageResource(R.mipmap.arrow_up);
-                    Tvdes.setMaxLines(50);
+                    Tvdes.setMaxLines(500);
                     Ivdown1.setTag("on");
                 }else{
                     Ivdown1.setImageResource(R.mipmap.arrow_down);
@@ -194,7 +190,7 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.details_download:
                 //开始下载
-
+                Toast.makeText(this, "开始下载！", Toast.LENGTH_LONG).show();
                 break;
             case R.id.details_share:
                 Toast.makeText(this, "分享成功！", Toast.LENGTH_LONG).show();
@@ -216,7 +212,7 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
                             format((Double.parseDouble(appinfo.getSize()) / (1024 * 1024))) + "MB");
                     Tvdes.setText(appinfo.getDes());
                     Tvaurth.setText(appinfo.getAuthor());
-                    ImgUtils.setInterImg(StoreApplication.IP_ADDRESS + "image?name=" + appinfo.getIconUrl(), Ivicon);
+                    ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + appinfo.getIconUrl(), Ivicon,R.mipmap.safedesurl0);
 
                     //将图片装载到数组中
 
@@ -232,8 +228,6 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
                         mImageViews[i] = imageView;
 
                         ImgUtils.setInterImg(StoreApplication.IP_ADDRESS+"image?name="+jsonArray.optString(i),imageView);
-                        mImageViews[i].setScaleType(ImageView.ScaleType.CENTER_CROP);
-                        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     }
                     viewPager.setAdapter(new ScreenAdapter());
                     viewPager.setCurrentItem((mImageViews.length) * 100);
@@ -301,7 +295,6 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
         public Object instantiateItem(View container, int position) {
             try {
                 ImageView views=mImageViews[position % mImageViews.length];
-                views.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 ((ViewPager)container).addView(views, 0);
             }catch(Exception e){
             }

@@ -180,10 +180,10 @@ public class GameFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Toast.makeText(getActivity(),"跳转",Toast.LENGTH_SHORT).show();
-/*        Intent intent=new Intent(getActivity(), AppDetailsActvity.class);
+        Intent intent=new Intent(getActivity(), AppDetailsActvity.class);
         Bundle bundle=new Bundle();
         bundle.putString("comname",listdata.get(position).get("packagename").toString());
         intent.putExtras(bundle);
-        startActivity(intent);*/
+        startActivity(intent);
     }
 }
