@@ -3,14 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/color_white"
+    android:orientation="vertical"
     tools:context=".activity.MainActivity">
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:background="@color/color_bg"
-        android:layout_height="54dp">
+        android:layout_height="54dp"
+        android:background="@color/color_bg">
 
         <ImageView
             android:id="@+id/slide_menu"
@@ -19,23 +19,25 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:src="@mipmap/ic_setting" />
+
         <ImageView
-            android:layout_toRightOf="@+id/slide_menu"
+            android:id="@+id/id_launcher"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:id="@+id/id_launcher"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher1"/>
+            android:layout_toRightOf="@+id/slide_menu"
+            android:src="@mipmap/ic_launcher1" />
+
         <TextView
-            android:layout_toRightOf="@+id/id_launcher"
             android:layout_width="wrap_content"
-            android:text="应用市场"
-            android:textSize="18dp"
-            android:textColor="@color/color_black"
-            android:layout_marginLeft="10dp"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_height="wrap_content" />
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/id_launcher"
+            android:text="应用市场"
+            android:textColor="@color/color_black"
+            android:textSize="18dp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -130,6 +132,7 @@
                     android:layout_width="100dp"
                     android:layout_height="2dp"
                     android:layout_below="@+id/linear"
+                    android:layout_weight="1"
                     android:background="@color/color_main"
                     android:scaleType="matrix" />
             </RelativeLayout>

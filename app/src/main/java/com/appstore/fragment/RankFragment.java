@@ -1,20 +1,24 @@
 package com.appstore.fragment;
 
 import android.graphics.Color;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appstore.R;
-import com.appstore.tagview.OnTagClickListener;
-import com.appstore.tagview.Tag;
-import com.appstore.tagview.TagView;
+import com.appstore.widget.MyFlowLayout;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -25,14 +29,12 @@ import org.json.JSONException;
 import java.util.Random;
 
 /**
- * Created by 张艳琴 on 2016/9/19.
+ * Created by 张艳琴 on 516/9/19.
  */
 public class RankFragment extends Fragment {
 
-    private TagView tagView;
-    private Random random;
-    String[] contet = null;
     View contentView;
+   ScrollView scrollView;
     String str;
 
     @Nullable
@@ -45,15 +47,8 @@ public class RankFragment extends Fragment {
     }
 
     private void findView(View v) {
-        tagView = (TagView) v.findViewById(R.id.tagview);
-        tagView.setOnTagClickListener(new OnTagClickListener() {
-            @Override
-            public void onTagClick(int position, Tag tag) {//每个Tag的点击事件
-                Toast.makeText(getActivity(), "click tag text = " + tag.text + " position = " + position, Toast.LENGTH_SHORT).show();
-            }
-        });
-        //ADD TAG
-        random = new Random();
+
+        scrollView = (ScrollView) v.findViewById(R.id.scroll_views);
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         String url = getResources().getString(R.string.ip_address) + "hot";
@@ -80,19 +75,52 @@ public class RankFragment extends Fragment {
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
                 if (str != null) {
-                    final String[] colors = getActivity().getResources().getStringArray(R.array.colors);
+                   final String[] colors = getActivity().getResources().getStringArray(R.array.colors);
                     JSONArray jsonArray = null;
+
+                    int padding = (int) (getActivity().getResources().getDisplayMetrics().density * 10 + 0.5f);
+                    int padding1 = (int) (getActivity().getResources().getDisplayMetrics().density * 5 + 0.5f);
+                    scrollView.setPadding(padding, padding, padding, padding);
+                    MyFlowLayout flowLayout = new MyFlowLayout(getActivity());
+                    Random random = new Random();
                     try {
                         jsonArray = new JSONArray(str);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        Tag tag = new Tag(jsonArray.optString(i));
-                        tag.radius = 20f;
-                        tag.layoutColor = Color.parseColor(colors[i % colors.length]);
-                        tagView.addTag(tag);
+                    for (int i = 0; i < jsonArray.length()-18; i++) {
+                        final String str = jsonArray.optString(i);
+                        TextView textView = new TextView(getActivity());
+                        int left, top, right, bottom;
+                        left = top = right = bottom =0;
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        params.setMargins(left, top, right, bottom);
+                        textView.setLayoutParams(params);
+                        textView.setTextSize(14);
+                        textView.setText(str);
+                        textView.setGravity(Gravity.CENTER);
+                        textView.setPadding(padding1, padding1, padding1, padding1);
+                        textView.setTextColor(Color.WHITE);
+                        //随机创建颜色值
+
+                        ShapeDrawable backgroundDrawable = new ShapeDrawable(new RoundRectShape(new float[] {5, 5, 5, 5, 5, 5, 5, 5},
+                                null, null));
+                    //    backgroundDrawable.getPaint().setColor( defaultColor);
+                        backgroundDrawable.getPaint().setColor(  Color.parseColor(colors[i % colors.length]));
+                        textView.setBackgroundDrawable(backgroundDrawable);
+                        textView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(getActivity(), str, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        LinearLayout ll = new LinearLayout(getActivity()); // + 增加行
+                        ll.setOrientation(LinearLayout.VERTICAL); // + 增加行
+                        ll.addView(textView); // + 增加行
+                        flowLayout.addView(ll);
                     }
+                   scrollView.addView(flowLayout);
                 }
             }
         }

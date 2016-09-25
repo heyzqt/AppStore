@@ -8,10 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RatingBar;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.appstore.R;
 import com.appstore.fragment.MainFragment;
@@ -70,19 +69,23 @@ public class ListViewAdapter extends BaseAdapter implements View.OnClickListener
         {
             convertView=inflater.inflate(R.layout.fg_listitem,null);
             holder=new ViewHolder();
-            holder.img_download=(ImageView)convertView.findViewById(R.id.mfg_img_download);
+            holder.img_download=(ImageView)convertView.findViewById(R.id.fg_img_download);
             holder.img_appimg=(ImageView)convertView.findViewById(R.id.mfg_img_app);
             holder.tv_appname=(TextView) convertView.findViewById(R.id.mfg_tv_appname);
             holder.tv_appsize=(TextView) convertView.findViewById(R.id.mfg_tv_appsize);
             holder.tv_appintro=(TextView) convertView.findViewById(R.id.mfg_tv_intro);
             holder.rb_apprank=(RatingBar) convertView.findViewById(R.id.mfg_rb_ratingBar);
 
+            holder.img_download.setOnClickListener(this);
 
 
-            initImageLoader(context);
+
+            ImgLoaders loader=new ImgLoaders();
+            loader.initImageLoader(context);
+ //           initImageLoader(context);
             mImageLoader = ImageLoader.getInstance();
             holder.img_appimg.setScaleType(ImageView.ScaleType.FIT_XY);
-            mImageLoader.displayImage("http://192.168.0.83:8080/GooglePlayServer/image?name="+listdata.get(position).get("iconUrl").toString(),holder.img_appimg,getOption());
+            mImageLoader.displayImage("http://localhost:8090/image?name="+listdata.get(position).get("iconUrl").toString(),holder.img_appimg,loader.getOption());
 
             Log.i("126","imgurl:"+listdata.get(position).get("iconUrl").toString());
             holder.rb_apprank.setRating(Float.parseFloat(listdata.get(position).get("stars").toString()));
@@ -99,20 +102,19 @@ public class ListViewAdapter extends BaseAdapter implements View.OnClickListener
         {
             holder=(ViewHolder)convertView.getTag();
             holder.img_appimg.setScaleType(ImageView.ScaleType.FIT_XY);
-            initImageLoader(context);
+            ImgLoaders loader=new ImgLoaders();
+            loader.initImageLoader(context);
             mImageLoader = ImageLoader.getInstance();
-            mImageLoader.displayImage("http://192.168.0.83:8080/GooglePlayServer/image?name="+listdata.get(position).get("iconUrl").toString(),holder.img_appimg,getOption()
+            mImageLoader.displayImage("http://localhost:8090/image?name="+listdata.get(position).get("iconUrl").toString(),holder.img_appimg,loader.getOption()
             );
 
-            Log.i("126","imgurl:"+listdata.get(position).get("iconUrl").toString());
-            holder.rb_apprank.setProgress(Integer.parseInt(listdata.get(position).get("stars").toString()));
+            holder.rb_apprank.setRating(Float.parseFloat(listdata.get(position).get("stars").toString()));
 
             holder.tv_appname.setText(listdata.get(position).get("name").toString());
-            Log.i("125","appname:"+listdata.get(position).get("name").toString());
             holder.tv_appintro.setText(listdata.get(position).get("intro").toString());
-            Log.i("125","appintro:"+listdata.get(position).get("intro").toString());
             holder.tv_appsize.setText(listdata.get(position).get("size").toString());
 
+            holder.img_download.setOnClickListener(this);
         }
         return convertView;
     }
@@ -123,7 +125,8 @@ public class ListViewAdapter extends BaseAdapter implements View.OnClickListener
 
         switch (v.getId())
         {
-            case R.id.mfg_img_download:
+            case R.id.fg_img_download:
+                Toast.makeText(context,"开始下载",Toast.LENGTH_SHORT).show();
                 //downApk();
                 break;
         }

@@ -12,12 +12,13 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
+
 import java.io.File;
 
 /**
  * Created by XFT on 2016/9/20.
  */
-public class ImgLoader {
+public class ImgLoaders {
 
     public static String IMAGE_CACHE_PATH = "imageloader/Cache";
 

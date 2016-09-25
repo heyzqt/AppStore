@@ -1,9 +1,5 @@
 package com.appstore.adapter;
 
-/**
- * Created by 张艳琴 on 2016/9/19.
- */
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,29 +10,33 @@ import android.widget.TextView;
 
 import com.appstore.R;
 import com.appstore.StoreApplication;
+import com.appstore.entity.Safe;
 import com.appstore.entity.Subject;
 import com.appstore.utils.ImgUtils;
 
 import java.util.List;
 
-public class SubjectAdapter extends BaseAdapter {
-    List<Subject> subjectList = null;
+/**
+ * Created by 张艳琴 on 2016/9/22.
+ */
+public class SafeAdapter extends BaseAdapter {
+    List<Safe> safeList = null;
     Context mContext;
     LayoutInflater inflater;
 
-    public SubjectAdapter(Context context, List<Subject> subjectList) {
-        this.subjectList = subjectList;
+    public SafeAdapter(Context context, List<Safe> safeList) {
+        this.safeList = safeList;
         mContext = context;
     }
 
     @Override
     public int getCount() {
-        return subjectList.size();
+        return safeList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return subjectList.get(position);
+        return safeList.get(position);
     }
 
     @Override
@@ -50,22 +50,22 @@ public class SubjectAdapter extends BaseAdapter {
         if (convertView == null) {
             inflater = LayoutInflater.from(mContext);
             // 按当前所需的样式，确定new的布局
-            convertView = inflater.inflate(R.layout.subject_list_item, parent, false);
+            convertView = inflater.inflate(R.layout.item_safe, parent, false);
             holder = new ViewHolder();
-            holder.title = (TextView) convertView.findViewById(R.id.subject_item_text);
-            holder.bg = (ImageView) convertView.findViewById(R.id.subject_item_img);
+            holder.title = (TextView) convertView.findViewById(R.id.safe_item_text);
+            holder.icon= (ImageView) convertView.findViewById(R.id.safe_item_img);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.title.setText(subjectList.get(position).getDes());
-        ImgUtils.setInterImg(StoreApplication.IP_ADDRESS+"image?name="+subjectList.get(position).getUrl(),holder.bg);
+        holder.title.setText(safeList.get(position).getSafeDes());
+        holder.icon.setImageResource(R.mipmap.safedesurl0);
         return convertView;
     }
 
     public class ViewHolder {
         TextView title;
-        ImageView bg;
+        ImageView icon;
     }
 
 }
