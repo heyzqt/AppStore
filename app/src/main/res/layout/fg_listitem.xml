@@ -33,7 +33,7 @@
                     android:orientation="vertical"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.25">
+                    android:layout_weight="0.22">
 
 
                     <RelativeLayout
@@ -56,7 +56,7 @@
                     android:orientation="vertical"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.55"
+                    android:layout_weight="0.58"
                     android:weightSum="1">
 
                     <LinearLayout
