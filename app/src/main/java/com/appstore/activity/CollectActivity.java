@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.appstore.R;
+import com.appstore.entity.AppInfo;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.http.HttpHandler;
 
@@ -27,7 +27,7 @@ import java.text.DecimalFormat;
 /**
  * Created by heyzqt on 2016/9/19.
  */
-public class CollectActivity extends AppCompatActivity implements View.OnClickListener {
+public class CollectActivity extends BaseActivity implements View.OnClickListener {
 
     private ProgressBar mProgressbar;
 
@@ -68,6 +68,16 @@ public class CollectActivity extends AppCompatActivity implements View.OnClickLi
         initView();
     }
 
+    @Override
+    public void publish(int progress) {
+        Log.i(TAG, "publish: progress==="+progress);
+    }
+
+    @Override
+    public void change(AppInfo appInfo) {
+        Log.i(TAG, "change: appInfo==="+appInfo);
+    }
+
     private void initView() {
         mProgressbar = (ProgressBar) findViewById(R.id.progressBar);
         mTextView = (TextView) findViewById(R.id.tv_progress);
@@ -98,23 +108,23 @@ public class CollectActivity extends AppCompatActivity implements View.OnClickLi
                     isDownloading = true;
                     mDownBtn.setText("暂停");
                 }
-                final File file = new File(path, filename);
+                final File file = new File(path, "hehe.apk");
                 int i = 0;
                 if (file.exists()) {
                     final long filesize = file.length();
                     Log.i(TAG, "已有文件大小为:" + filesize);
                     if (filesize > 0) {
                         Log.i(TAG, "文件续传");
-                        downloadAPP(url_second + filesize, filesize, path + filename);
+                        downloadAPP(url_second + filesize, filesize, path + "hehe.apk");
                     } else {
                         Log.i(TAG, "文件大小为0");
-                        downloadAPP(url_second, 0, path + filename);
+                        downloadAPP(url_second, 0, path + "hehe.apk");
                     }
                 } else {
                     try {
                         Log.i(TAG, "文件不存在，下载");
                         file.createNewFile();
-                        downloadAPP(url_second, 0, path + filename);
+                        downloadAPP(url_second, 0, path + "hehe.apk");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

@@ -9,7 +9,6 @@ public class DownLoadInfo {
     private String appId;
     private String appname;
     private String packagename;
-    private String status;
 
     public int getId() {
         return id;
@@ -41,16 +40,5 @@ public class DownLoadInfo {
 
     public void setAppname(String appname) {
         this.appname = appname;
-    }
-
-    @Override
-    public String toString() {
-        return "DownLoadInfo{" +
-                "id=" + id +
-                ", appId='" + appId + '\'' +
-                ", appname='" + appname + '\'' +
-                ", packagename='" + packagename + '\'' +
-                ", status='" + status + '\'' +
-                '}';
     }
 }
