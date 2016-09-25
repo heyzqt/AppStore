@@ -179,7 +179,7 @@ public class AppsFragment extends Fragment implements AdapterView.OnItemClickLis
         Toast.makeText(getActivity(),"跳转",Toast.LENGTH_SHORT).show();
        Intent intent=new Intent(getActivity(), AppDetailsActvity.class);
         Bundle bundle=new Bundle();
-        bundle.putString("comname",listdata.get(position).get("packagename").toString());
+        bundle.putString("comname",listdata.get(position-1).get("packagename").toString());
         intent.putExtras(bundle);
         startActivity(intent);
     }

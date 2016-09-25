@@ -213,7 +213,6 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
                     Tvdes.setText(appinfo.getDes());
                     Tvaurth.setText(appinfo.getAuthor());
                     ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + appinfo.getIconUrl(), Ivicon,R.mipmap.safedesurl0);
-
                     //将图片装载到数组中
 
                     JSONArray jsonArray = null;
@@ -226,8 +225,7 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
                     for(int i=0; i<mImageViews.length; i++){
                         ImageView imageView = new ImageView(AppDetailsActvity.this);
                         mImageViews[i] = imageView;
-
-                        ImgUtils.setInterImg(StoreApplication.IP_ADDRESS+"image?name="+jsonArray.optString(i),imageView);
+                        ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS+"image?name="+jsonArray.optString(i),imageView,R.mipmap.screen0);
                     }
                     viewPager.setAdapter(new ScreenAdapter());
                     viewPager.setCurrentItem((mImageViews.length) * 100);

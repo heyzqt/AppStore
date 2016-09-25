@@ -59,7 +59,7 @@ public class SubjectAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.title.setText(subjectList.get(position).getDes());
-        ImgUtils.setInterImg(StoreApplication.IP_ADDRESS+"image?name="+subjectList.get(position).getUrl(),holder.bg);
+        ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS+"image?name="+subjectList.get(position).getUrl(),holder.bg,R.mipmap.recommend_01);
         return convertView;
     }
 

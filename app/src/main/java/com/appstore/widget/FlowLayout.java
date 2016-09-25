@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by mChenys on 2015/12/5.
  */
-public class MyFlowLayout extends ViewGroup {
+public class FlowLayout extends ViewGroup {
     public static final int DEFAULT_SPACING = 20;
     //水平间距和垂直间距
     private int mHorizontalSpacing = DEFAULT_SPACING, mVertivalSpacing = DEFAULT_SPACING;
@@ -24,15 +24,15 @@ public class MyFlowLayout extends ViewGroup {
     private int maxLine = 100; //最大行数
     private List<Line> mLineList = new ArrayList<>();
 
-    public MyFlowLayout(Context context) {
+    public FlowLayout(Context context) {
         this(context, null);
     }
 
-    public MyFlowLayout(Context context, AttributeSet attrs) {
+    public FlowLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public MyFlowLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public FlowLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
