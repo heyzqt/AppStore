@@ -88,12 +88,15 @@ public class DownloadService extends Service {
         }
     }
 
+    DownloadService(){}
+
     @Override
     public void onCreate() {
         super.onCreate();
         mStoreAPP = (StoreApplication) getApplication();
         mPath = Environment.getExternalStorageDirectory().getPath() + "/AppStore/";
         //获取当前下载列表
+        Log.i(TAG, "onCreate: service create");
     }
 
     //更新下载状态接口
@@ -114,7 +117,7 @@ public class DownloadService extends Service {
     public void downloadAPP(AppInfo appInfo){
 
         String url = StoreApplication.IP_ADDRESS+"download?name="+appInfo.getDownloadUrl()+"&&range=";
-        String [] str =  appInfo.getPackageName().split(".");
+        String [] str =  appInfo.getPackageName().split("\\.");
         String filename = str[str.length-1]+".apk";
         Log.i("hello", "filename ==== "+filename);
         if (isDownloading) {

@@ -60,22 +60,14 @@ public class CollectActivity extends BaseActivity implements View.OnClickListene
     HttpURLConnection mConn = null;
     private String filename = "youyuan.apk";
 
+    private AppInfo mAppInfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collect);
 
         initView();
-    }
-
-    @Override
-    public void publish(int progress) {
-        Log.i(TAG, "publish: progress==="+progress);
-    }
-
-    @Override
-    public void change(AppInfo appInfo) {
-        Log.i(TAG, "change: appInfo==="+appInfo);
     }
 
     private void initView() {
@@ -94,43 +86,85 @@ public class CollectActivity extends BaseActivity implements View.OnClickListene
 
         text = (EditText) findViewById(R.id.tv_mytext);
         mProgressbar.setMax(100);
-        httpUtils = new HttpUtils();
+
+
+        Bundle bundle = getIntent().getExtras();
+        if(bundle!=null){
+            mAppInfo = (AppInfo) bundle.getSerializable("appinfo");
+            Log.i(TAG, "initView: "+mAppInfo.toString());
+        }
+        //httpUtils = new HttpUtils();
+    }
+
+    @Override
+    public void publish(int progress) {
+        Log.i(TAG, "publish: progress==="+progress);
+    }
+
+    @Override
+    public void change(AppInfo appInfo) {
+        Log.i(TAG, "change: appInfo==="+appInfo);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bindDownloadService();
+        if(mService==null){
+            Log.i(TAG, "onResume: mService==null");
+        }else{
+            Log.i(TAG, "onResume: mService不为null");
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unbindDownloadService();
     }
 
     @Override
     public void onClick(View v) {
+
         switch (v.getId()) {
             case R.id.button_down:
-                if (isDownloading) {
-                    isDownloading = false;
-                    mDownBtn.setText("开始");
-                } else {
-                    isDownloading = true;
-                    mDownBtn.setText("暂停");
+                if(mService==null){
+                    Log.i(TAG, "initView: service null");
+                }else{
+                    Log.i(TAG, "initView: service 不为 null");
+                    mService.downloadAPP(mAppInfo);
                 }
-                final File file = new File(path, "hehe.apk");
-                int i = 0;
-                if (file.exists()) {
-                    final long filesize = file.length();
-                    Log.i(TAG, "已有文件大小为:" + filesize);
-                    if (filesize > 0) {
-                        Log.i(TAG, "文件续传");
-                        downloadAPP(url_second + filesize, filesize, path + "hehe.apk");
-                    } else {
-                        Log.i(TAG, "文件大小为0");
-                        downloadAPP(url_second, 0, path + "hehe.apk");
-                    }
-                } else {
-                    try {
-                        Log.i(TAG, "文件不存在，下载");
-                        file.createNewFile();
-                        downloadAPP(url_second, 0, path + "hehe.apk");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+
+//                if (isDownloading) {
+//                    isDownloading = false;
+//                    mDownBtn.setText("开始");
+//                } else {
+//                    isDownloading = true;
+//                    mDownBtn.setText("暂停");
+//                }
+//                final File file = new File(path, "hehe.apk");
+//                int i = 0;
+//                if (file.exists()) {
+//                    final long filesize = file.length();
+//                    Log.i(TAG, "已有文件大小为:" + filesize);
+//                    if (filesize > 0) {
+//                        Log.i(TAG, "文件续传");
+//                        downloadAPP(url_second + filesize, filesize, path + "hehe.apk");
+//                    } else {
+//                        Log.i(TAG, "文件大小为0");
+//                        downloadAPP(url_second, 0, path + "hehe.apk");
+//                    }
+//                } else {
+//                    try {
+//                        Log.i(TAG, "文件不存在，下载");
+//                        file.createNewFile();
+//                        downloadAPP(url_second, 0, path + "hehe.apk");
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
                 break;
-        }
+       }
     }
 
     private void downloadAPP(final String url, final long pos, final String savePathAndFile) {

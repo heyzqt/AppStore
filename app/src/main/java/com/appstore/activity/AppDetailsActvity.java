@@ -1,12 +1,12 @@
 package com.appstore.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -191,6 +192,11 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
             case R.id.details_download:
                 //开始下载
                 Toast.makeText(this, "开始下载！", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this,CollectActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("appinfo", (Serializable) appinfo);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             case R.id.details_share:
                 Toast.makeText(this, "分享成功！", Toast.LENGTH_LONG).show();

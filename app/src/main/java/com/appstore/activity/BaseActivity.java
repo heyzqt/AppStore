@@ -46,7 +46,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * 绑定服务
      */
-    public void bindService() {
+    public void bindDownloadService() {
         if (!isBound) {
             Intent intent = new Intent(this, DownloadService.class);
             bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
@@ -57,7 +57,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * 解绑服务
      */
-    public void unbindService(){
+    public void unbindDownloadService(){
         if(isBound){
             unbindService(mServiceConn);
             isBound = false;

@@ -24,6 +24,7 @@
         <activity android:name=".activity.AppDetailsActvity"></activity>
         <activity android:name=".activity.CollectActivity">
         </activity>
+        <service android:name=".activity.DownloadService"></service>
     </application>
 
 </manifest>
