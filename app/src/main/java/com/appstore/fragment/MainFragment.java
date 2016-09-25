@@ -11,7 +11,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,6 @@ import com.appstore.R;
 import com.appstore.activity.AppDetailsActvity;
 import com.appstore.adapter.ImgLoaders;
 import com.appstore.adapter.ListViewAdapter;
-import com.appstore.utils.ImgUtils;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.StaticPagerAdapter;
 import com.jude.rollviewpager.hintview.ColorPointHintView;
@@ -43,8 +41,6 @@ import java.util.HashMap;
  * Created by 张艳琴 on 2016/9/19.
  */
 public class MainFragment extends Fragment implements AdapterView.OnItemClickListener,XListView.IXListViewListener {
-
-   // private ListView mfg_listview;
 
     private ListViewAdapter adapter;
     private XListView mListView;
@@ -68,9 +64,7 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
                 jsonObject = new JSONObject(j);
                 if (index == 0) {
 
-                    Log.i("127", "jsonArray1");
                     JSONArray jsonArray1 = jsonObject.getJSONArray("picture");
-                    Log.i("127", jsonArray1.toString());
                     for (int i = 0; i < jsonArray1.length(); i++) {
                         HashMap<String, Object> map = new HashMap<String, Object>();
                         map.put("pagerimageurl", jsonArray1.get(i).toString());
@@ -86,7 +80,6 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
 
                     map.put("id", object.get("id").toString());
                     map.put("name", object.get("name").toString());
-                    Log.i("127",object.get("name").toString());
                     //获取包名
                     map.put("packagename", object.get("packageName").toString());
                     map.put("iconUrl", object.get("iconUrl"));
@@ -106,9 +99,7 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
 
                     mListView.setVisibility(View.VISIBLE);
                     mf_pb.setVisibility(View.GONE);
-                     Log.i("127","handler");
                     adapter = new ListViewAdapter(getActivity(),listdata);
-                    Log.i("127","handler2");
                     mListView.setAdapter(adapter);
                     setPagerView();
             }
@@ -151,6 +142,7 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         mListView.setRefreshTime("刚刚");
     }
 
+    //设置轮播
     public void setPagerView()
     {
 
@@ -161,19 +153,11 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         //设置适配器
         rollpager.setAdapter(new TestNormalAdapter(context));
 
-
-
-        //设置指示器（顺序依次）
-        //自定义指示器图片
-        //设置圆点指示器颜色
-        //设置文字指示器
-        //隐藏指示器
-        //mRollViewPager.setHintView(new IconHintView(this,R.drawable.point_focus,R.drawable.point_normal));
         rollpager.setHintView(new ColorPointHintView(getActivity(),Color.YELLOW,Color.WHITE));
-        //mRollViewPager.setHintView(new TextHintView(this));
-        //mRollViewPager.setHintView(null);
+
     }
 
+    //刷新
     @Override
     public void onRefresh() {
         Toast.makeText(getActivity(),"已经是最新的了",Toast.LENGTH_SHORT).show();
@@ -181,10 +165,10 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
 
     }
 
+    //加载更多
     @Override
     public void onLoadMore() {
         index=index+1;
-        Log.i("127"," onLoadMore");
         new Thread(new loadHttpData()).start();
     }
 
@@ -229,22 +213,12 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
     }
 
 
-
-//    //异步访问数据，加载轮播数据
-//    private class loadImage implements Runnable
-//    {
-//
-//        @Override
-//        public void run() {
-//
-//            new TestNormalAdapter(context);
-//        }
-//    }
     public ArrayList<HashMap<String,Object>> getListData()
     {
         return listdata;
     }
 
+    //加载网络数据
     private class loadHttpData implements  Runnable
     {
 
@@ -271,14 +245,12 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
                     bundle.putInt("changcode", 1);
                     bundle.putString("Json",jsonObject.toString());
                     msg.setData(bundle);
-                    Log.i("124", "sendMessage");
                     handle.sendMessage(msg);
         }
 
         @Override
         public void onFailure(Throwable throwable, JSONArray jsonArray) {
             super.onFailure(throwable, jsonArray);
-            Log.i("123","onFailure");
         }
     }
 
@@ -288,7 +260,7 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         Toast.makeText(getActivity(),"跳转",Toast.LENGTH_SHORT).show();
        Intent intent=new Intent(getActivity(), AppDetailsActvity.class);
         Bundle bundle=new Bundle();
-        bundle.putString("comname",listdata.get(position).get("packagename").toString());
+        bundle.putString("comname",listdata.get(position-1).get("packagename").toString());
         intent.putExtras(bundle);
         startActivity(intent);
 

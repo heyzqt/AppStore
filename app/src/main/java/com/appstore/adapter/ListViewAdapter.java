@@ -2,7 +2,6 @@ package com.appstore.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +37,6 @@ public class ListViewAdapter extends BaseAdapter implements View.OnClickListener
     private ArrayList<HashMap<String,Object>> listdata;
     public ListViewAdapter(Context context, ArrayList<HashMap<String,Object>> listdata)
     {
-        Log.i("125"," ListViewAdapter");
         this.context=context;
         this.listdata=listdata;
         this.inflater=LayoutInflater.from(context);
@@ -46,19 +44,16 @@ public class ListViewAdapter extends BaseAdapter implements View.OnClickListener
     @Override
     public int getCount() {
         MainFragment mf=new MainFragment();
-        Log.i("125","getcount:"+String.valueOf(listdata.size()));
         return listdata.size();
     }
 
     @Override
     public Object getItem(int position) {
-        Log.i("125"," getItem");
         return null;
     }
 
     @Override
     public long getItemId(int position) {
-        Log.i("125"," getItemId");
         return 0;
     }
 
@@ -83,21 +78,16 @@ public class ListViewAdapter extends BaseAdapter implements View.OnClickListener
 
             ImgLoaders loader=new ImgLoaders();
             loader.initImageLoader(context);
- //           initImageLoader(context);
             mImageLoader = ImageLoader.getInstance();
             holder.img_appimg.setScaleType(ImageView.ScaleType.FIT_XY);
             mImageLoader.displayImage("http://localhost:8090/image?name="+listdata.get(position).get("iconUrl").toString(),holder.img_appimg,loader.getOption());
 
-           // Log.i("127","imgurl:"+listdata.get(position).get("iconUrl").toString());
             holder.rb_apprank.setRating(Float.parseFloat(listdata.get(position).get("stars").toString()));
 
             holder.tv_appname.setText(listdata.get(position).get("name").toString());
-           // Log.i("127","appname:"+listdata.get(position).get("name").toString());
             holder.tv_appintro.setText(listdata.get(position).get("intro").toString());
-           // Log.i("127","appintro:"+listdata.get(position).get("intro").toString());
             DecimalFormat df=new DecimalFormat("#.##");
             holder.tv_appsize.setText(String.valueOf(df.format((Float.parseFloat(listdata.get(position).get("size").toString())/(1024*1024))))+"MB");
-           // String.valueOf((Float.parseFloat(listdata.get(position).get("size").toString())))+"MB"
             convertView.setTag(holder);
         }
         else

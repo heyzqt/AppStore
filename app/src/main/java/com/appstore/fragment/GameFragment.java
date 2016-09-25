@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +48,6 @@ public class GameFragment extends Fragment implements AdapterView.OnItemClickLis
 
             try {
                   JSONArray jsonArray=new JSONArray(j);
-                Log.i("128","leng:"+String.valueOf(jsonArray.length()));
                 for (int i = 0; i <jsonArray.length();i++) {
                     HashMap<String, Object> map = new HashMap<String, Object>();
                     JSONObject object = jsonArray.getJSONObject(i);
@@ -121,6 +119,7 @@ public class GameFragment extends Fragment implements AdapterView.OnItemClickLis
         return listdata;
     }
 
+    //刷新
     @Override
     public void onRefresh() {
 
@@ -128,15 +127,16 @@ public class GameFragment extends Fragment implements AdapterView.OnItemClickLis
         onLoad();
     }
 
+    //加载更多
     @Override
     public void onLoadMore() {
 
         index=index+1;
-        Log.i("127"," onLoadMore");
         new Thread(new loadLocalData(1)).start();
     }
 
 
+    //加载网络数据
     private class loadLocalData implements  Runnable
     {
 
@@ -169,7 +169,6 @@ public class GameFragment extends Fragment implements AdapterView.OnItemClickLis
                 bundle.putInt("changcode",code);
                 bundle.putString("Json",jsonArray.toString());
                 msg.setData(bundle);
-                Log.i("127","gf:sendMessage");
                 handle.sendMessage(msg);
 
 
@@ -184,7 +183,7 @@ public class GameFragment extends Fragment implements AdapterView.OnItemClickLis
         Toast.makeText(getActivity(),"跳转",Toast.LENGTH_SHORT).show();
         Intent intent=new Intent(getActivity(), AppDetailsActvity.class);
         Bundle bundle=new Bundle();
-        bundle.putString("comname",listdata.get(position).get("packagename").toString());
+        bundle.putString("comname",listdata.get(position-1).get("packagename").toString());
         intent.putExtras(bundle);
         startActivity(intent);
     }

@@ -105,8 +105,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mPager.setCurrentItem(6);
                 break;
             case R.id.slide_menu:
-              //  initView2();
-                startActivity(new Intent(this,CollectActivity.class));
+                initView2();
+               // startActivity(new Intent(this,CollectActivity.class));
                 break;
         }
     }
@@ -271,7 +271,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 启动popupWindow；
         PopupWindowUtils popu = new PopupWindowUtils(MainActivity.this,
                 screenWidth, screenHeigh - 130, downView, view);
-       // center = (TextView) view.findViewById(R.id.center);// 个人中心
     }
 
 }
