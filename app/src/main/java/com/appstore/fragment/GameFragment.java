@@ -1,6 +1,7 @@
 package com.appstore.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.appstore.R;
+import com.appstore.activity.AppDetailsActvity;
 import com.appstore.adapter.ListViewAdapter;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
