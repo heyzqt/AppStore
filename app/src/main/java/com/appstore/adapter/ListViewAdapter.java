@@ -23,6 +23,7 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -87,14 +88,15 @@ public class ListViewAdapter extends BaseAdapter implements View.OnClickListener
             holder.img_appimg.setScaleType(ImageView.ScaleType.FIT_XY);
             mImageLoader.displayImage("http://localhost:8090/image?name="+listdata.get(position).get("iconUrl").toString(),holder.img_appimg,loader.getOption());
 
-            Log.i("126","imgurl:"+listdata.get(position).get("iconUrl").toString());
+           // Log.i("127","imgurl:"+listdata.get(position).get("iconUrl").toString());
             holder.rb_apprank.setRating(Float.parseFloat(listdata.get(position).get("stars").toString()));
 
             holder.tv_appname.setText(listdata.get(position).get("name").toString());
-            Log.i("125","appname:"+listdata.get(position).get("name").toString());
+           // Log.i("127","appname:"+listdata.get(position).get("name").toString());
             holder.tv_appintro.setText(listdata.get(position).get("intro").toString());
-            Log.i("125","appintro:"+listdata.get(position).get("intro").toString());
-            holder.tv_appsize.setText(String.valueOf((Float.parseFloat(listdata.get(position).get("size").toString()))/(1024*1024))+"MB");
+           // Log.i("127","appintro:"+listdata.get(position).get("intro").toString());
+            DecimalFormat df=new DecimalFormat("#.##");
+            holder.tv_appsize.setText(String.valueOf(df.format((Float.parseFloat(listdata.get(position).get("size").toString())/(1024*1024))))+"MB");
            // String.valueOf((Float.parseFloat(listdata.get(position).get("size").toString())))+"MB"
             convertView.setTag(holder);
         }
@@ -112,7 +114,8 @@ public class ListViewAdapter extends BaseAdapter implements View.OnClickListener
 
             holder.tv_appname.setText(listdata.get(position).get("name").toString());
             holder.tv_appintro.setText(listdata.get(position).get("intro").toString());
-            holder.tv_appsize.setText(listdata.get(position).get("size").toString());
+            DecimalFormat df=new DecimalFormat("#.##");
+            holder.tv_appsize.setText(String.valueOf(df.format((Float.parseFloat(listdata.get(position).get("size").toString())/(1024*1024))))+"MB");
 
             holder.img_download.setOnClickListener(this);
         }
