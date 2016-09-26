@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.appstore.R;
 import com.appstore.entity.AppInfo;
+import com.appstore.entity.DownLoadInfo;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.http.HttpHandler;
 
@@ -102,14 +103,14 @@ public class CollectActivity extends BaseActivity implements View.OnClickListene
     }
 
     @Override
-    public void change(AppInfo appInfo) {
+    public void change(DownLoadInfo appInfo) {
         Log.i(TAG, "change: appInfo==="+appInfo);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        bindDownloadService();
+        //bindDownloadService();
         if(mService==null){
             Log.i(TAG, "onResume: mService==null");
         }else{

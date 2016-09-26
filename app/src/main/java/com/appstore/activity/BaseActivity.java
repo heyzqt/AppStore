@@ -8,9 +8,10 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.appstore.StoreApplication;
-import com.appstore.entity.AppInfo;
+import com.appstore.entity.DownLoadInfo;
 
 /**
  * Created by heyzqt on 2016/9/25.
@@ -27,19 +28,20 @@ public abstract class BaseActivity extends AppCompatActivity {
         mApp = (StoreApplication) getApplication();
     }
 
-    private ServiceConnection mServiceConn = new ServiceConnection() {
+    private ServiceConnection serviceConn = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             DownloadService.MyBinder downBinder = (DownloadService.MyBinder) service;
             mService = downBinder.getService();
 
             mService.setDownloadUpdateListener(mDownloadUpdateListener);
-            mDownloadUpdateListener.onChange(mService.getAppInfo());
+            mDownloadUpdateListener.onChange(mService.getDownLoadInfo());
+            Log.i("hello", "onServiceConnected: Service连接");
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            mService = null;
+            mService=null;
         }
     };
 
@@ -49,8 +51,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void bindDownloadService() {
         if (!isBound) {
             Intent intent = new Intent(this, DownloadService.class);
-            bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
+            bindService(intent, serviceConn, Context.BIND_AUTO_CREATE);
             isBound = true;
+            Log.i("hello", "bindDownloadService: 绑定服务");
         }
     }
 
@@ -59,7 +62,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     public void unbindDownloadService(){
         if(isBound){
-            unbindService(mServiceConn);
+            unbindService(serviceConn);
             isBound = false;
         }
     }
@@ -71,8 +74,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onChange(AppInfo appInfo) {
-            change(appInfo);
+        public void onChange(DownLoadInfo downLoadInfo) {
+            change(downLoadInfo);
         }
 
 
@@ -80,5 +83,5 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public abstract void publish(int progress);
 
-    public abstract void change(AppInfo appInfo);
+    public abstract void change(DownLoadInfo downLoadInfo);
 }

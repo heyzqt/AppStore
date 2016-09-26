@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.appstore.StoreApplication;
 import com.appstore.dbutils.DBHelper;
@@ -103,7 +104,7 @@ public class DownloadService extends Service {
         }
     }
 
-    DownloadService() {
+    public DownloadService() {
     }
 
     @Override
@@ -118,13 +119,14 @@ public class DownloadService extends Service {
             e.printStackTrace();
             mDownLoadInfos = null;
         }
+        Log.i(TAG, "Service 创建");
     }
 
     //更新下载状态接口
     public interface DownloadUpdateListener {
         public void onPublish(int progress);    //更新进度条位置
 
-        public void onChange(AppInfo appInfo);         //更新下载按钮状态
+        public void onChange(DownLoadInfo downLoadInfo);         //更新下载按钮状态
     }
 
     public void setDownloadUpdateListener(DownloadUpdateListener downloadUpdateListener) {
@@ -259,18 +261,17 @@ public class DownloadService extends Service {
      * @return
      */
     public int getDownWaitting() {
-        int result = 0;
         try {
             List<DownLoadInfo> waittingInfos = mStoreAPP.dbHelper.findAll(Selector.from(DownLoadInfo.class).where("status", "=", DOWN_WAITTING));
             if (waittingInfos != null && waittingInfos.size() > 0) {
                 return waittingInfos.size();
             } else {
-                return result;
+                return 0;
             }
         } catch (DbException e) {
             e.printStackTrace();
         }
-        return result;
+        return 0;
     }
 
     public int getCurrentPos() {

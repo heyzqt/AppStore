@@ -7,6 +7,7 @@ public class DownLoadInfo {
 
     private int id;
     private String appId;
+    private String packagename;
     private int status;
 
     public int getId() {
@@ -25,11 +26,29 @@ public class DownLoadInfo {
         this.appId = appId;
     }
 
+    public String getPackagename() {
+        return packagename;
+    }
+
+    public void setPackagename(String packagename) {
+        this.packagename = packagename;
+    }
+
     public int getStatus() {
         return status;
     }
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "DownLoadInfo{" +
+                "id=" + id +
+                ", appId='" + appId + '\'' +
+                ", packagename='" + packagename + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

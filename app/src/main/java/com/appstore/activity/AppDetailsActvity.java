@@ -78,6 +78,10 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_details);
+        initView();
+    }
+
+    private void initView(){
         Ivback = (ImageView) findViewById(R.id.back);
         Ivicon = (ImageView) findViewById(R.id.details_icon);
         Tvname = (TextView) findViewById(R.id.details_name);
@@ -113,13 +117,33 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
         Ivback.setOnClickListener(this);
         Btcollect.setOnClickListener(this);
         Btshare.setOnClickListener(this);
+
+        //更新下载UI
+        String packagename = getIntent().getStringExtra("comname");
+        //从DownLoad表中搜索是否有这个下载对象
+        try {
+            mDownloadInfo = DBHelper.getInstance(mApp).findFirst(Selector.from(DownLoadInfo.class).where("packagename","=",packagename));
+            if(mDownloadInfo==null){
+                mTvDownload.setText("下载");
+            }else{
+                if (mDownloadInfo.getStatus() == DownloadService.DOWN_UNLOAD) {
+                    mTvDownload.setText("下载");
+                } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_PAUSE) {
+                    mTvDownload.setText("继续下载");
+                } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_WAITTING) {
+                    mTvDownload.setText("等待下载");
+                }else if(mDownloadInfo.getStatus() == DownloadService.DOWN_FINISHED){
+                    mTvDownload.setText("下载完成");
+                }
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //bindDownloadService();
-        mService.setAppInfo(appinfo);
         bindDownloadService();
     }
 
@@ -138,6 +162,7 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void publish(int progress) {
+        Log.i(TAG, "publish: progress="+progress);
         mProgressbar.setProgress(progress);
         Message msg = Message.obtain();
         msg.what = UPDATE_INFO;
@@ -175,28 +200,8 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
     };
 
     @Override
-    public void change(AppInfo appInfo) {
-        Log.i(TAG, "change: 商品详情");
-
-        //从DownLoad表中搜索是否有这个下载对象
-        try {
-            mDownloadInfo = DBHelper.getInstance(mApp).findFirst(Selector.from(DownLoadInfo.class).where("appId","=",appinfo.getId()+""));
-            if(mDownloadInfo==null){
-                mTvDownload.setText("下载");
-            }else{
-                if (mDownloadInfo.getStatus() == DownloadService.DOWN_UNLOAD) {
-                    mTvDownload.setText("下载");
-                } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_PAUSE) {
-                    mTvDownload.setText("继续下载");
-                } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_WAITTING) {
-                    mTvDownload.setText("等待下载");
-                }else if(mDownloadInfo.getStatus() == DownloadService.DOWN_FINISHED){
-                    mTvDownload.setText("下载完成");
-                }
-            }
-        } catch (DbException e) {
-            e.printStackTrace();
-        }
+    public void change(DownLoadInfo downLoadInfo) {
+        Log.i(TAG, "change: ");
     }
 
     private void initData() {
@@ -240,6 +245,7 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
                     Message msg = Message.obtain();
                     msg.what = 1;
                     handler.sendEmptyMessage(1);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
