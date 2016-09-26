@@ -104,7 +104,7 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
     private void initData() {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
-        params.put("packageName",getIntent().getStringExtra("comname"));
+        params.put("packageName", getIntent().getStringExtra("comname"));
         String url = getResources().getString(R.string.ip_address) + "detail";
         client.get(url, params, new AsyncHttpResponseHandler() {
             @Override
@@ -167,7 +167,7 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
                     Ivdown.setImageResource(R.mipmap.arrow_up);
                     lv.setVisibility(View.VISIBLE);
                     Ivdown.setTag("on");
-                }else{
+                } else {
                     Ivdown.setImageResource(R.mipmap.arrow_down);
                     lv.setVisibility(View.GONE);
                     Ivdown.setTag("off");
@@ -178,7 +178,7 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
                     Ivdown1.setImageResource(R.mipmap.arrow_up);
                     Tvdes.setMaxLines(500);
                     Ivdown1.setTag("on");
-                }else{
+                } else {
                     Ivdown1.setImageResource(R.mipmap.arrow_down);
                     Tvdes.setMaxLines(5);
                     Ivdown1.setTag("off");
@@ -212,7 +212,7 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
                             format((Double.parseDouble(appinfo.getSize()) / (1024 * 1024))) + "MB");
                     Tvdes.setText(appinfo.getDes());
                     Tvaurth.setText(appinfo.getAuthor());
-                    ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + appinfo.getIconUrl(), Ivicon,R.mipmap.safedesurl0);
+                    ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + appinfo.getIconUrl(), Ivicon, R.mipmap.safedesurl0);
                     //将图片装载到数组中
 
                     JSONArray jsonArray = null;
@@ -222,10 +222,10 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
                         e.printStackTrace();
                     }
                     mImageViews = new ImageView[jsonArray.length()];
-                    for(int i=0; i<mImageViews.length; i++){
+                    for (int i = 0; i < mImageViews.length; i++) {
                         ImageView imageView = new ImageView(AppDetailsActvity.this);
                         mImageViews[i] = imageView;
-                        ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS+"image?name="+jsonArray.optString(i),imageView,R.mipmap.screen0);
+                        ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + jsonArray.optString(i), imageView, R.mipmap.screen0);
                     }
                     viewPager.setAdapter(new ScreenAdapter());
                     viewPager.setCurrentItem((mImageViews.length) * 100);
@@ -245,16 +245,28 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
                                 Ivsafe[2].setVisibility(View.GONE);
                                 break;
                             case 1:
+                                ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + safeList.get(0).getSafeUrl(),
+                                        Ivsafe[0], R.mipmap.safeicon0);
                                 Ivsafe[0].setVisibility(View.VISIBLE);
                                 Ivsafe[1].setVisibility(View.GONE);
                                 Ivsafe[2].setVisibility(View.GONE);
                                 break;
                             case 2:
+                                ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + safeList.get(0).getSafeUrl(),
+                                        Ivsafe[0], R.mipmap.safeicon0);
+                                ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + safeList.get(1).getSafeUrl(),
+                                        Ivsafe[1], R.mipmap.safeicon1);
                                 Ivsafe[0].setVisibility(View.VISIBLE);
                                 Ivsafe[1].setVisibility(View.VISIBLE);
                                 Ivsafe[2].setVisibility(View.GONE);
                                 break;
                             case 3:
+                                ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + safeList.get(0).getSafeUrl(),
+                                        Ivsafe[0], R.mipmap.safeicon0);
+                                ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + safeList.get(1).getSafeUrl(),
+                                        Ivsafe[1], R.mipmap.safeicon1);
+                                ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + safeList.get(2).getSafeUrl(),
+                                        Ivsafe[2], R.mipmap.safeicon2);
                                 Ivsafe[0].setVisibility(View.VISIBLE);
                                 Ivsafe[1].setVisibility(View.VISIBLE);
                                 Ivsafe[2].setVisibility(View.VISIBLE);
@@ -292,9 +304,9 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
         @Override
         public Object instantiateItem(View container, int position) {
             try {
-                ImageView views=mImageViews[position % mImageViews.length];
-                ((ViewPager)container).addView(views, 0);
-            }catch(Exception e){
+                ImageView views = mImageViews[position % mImageViews.length];
+                ((ViewPager) container).addView(views, 0);
+            } catch (Exception e) {
             }
             return mImageViews[position % mImageViews.length];
         }

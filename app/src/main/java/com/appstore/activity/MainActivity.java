@@ -105,8 +105,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mPager.setCurrentItem(6);
                 break;
             case R.id.slide_menu:
-                initView2();
-               // startActivity(new Intent(this,CollectActivity.class));
+                //initView2();
+                startActivity(new Intent(this,CollectActivity.class));
                 break;
         }
     }
