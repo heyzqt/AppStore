@@ -388,16 +388,28 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
                                 Ivsafe[2].setVisibility(View.GONE);
                                 break;
                             case 1:
+                                ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + safeList.get(0).getSafeUrl(),
+                                        Ivsafe[0], R.mipmap.safeicon0);
                                 Ivsafe[0].setVisibility(View.VISIBLE);
                                 Ivsafe[1].setVisibility(View.GONE);
                                 Ivsafe[2].setVisibility(View.GONE);
                                 break;
                             case 2:
+                                ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + safeList.get(0).getSafeUrl(),
+                                        Ivsafe[0], R.mipmap.safeicon0);
+                                ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + safeList.get(1).getSafeUrl(),
+                                        Ivsafe[1], R.mipmap.safeicon1);
                                 Ivsafe[0].setVisibility(View.VISIBLE);
                                 Ivsafe[1].setVisibility(View.VISIBLE);
                                 Ivsafe[2].setVisibility(View.GONE);
                                 break;
                             case 3:
+                                ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + safeList.get(0).getSafeUrl(),
+                                        Ivsafe[0], R.mipmap.safeicon0);
+                                ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + safeList.get(1).getSafeUrl(),
+                                        Ivsafe[1], R.mipmap.safeicon1);
+                                ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + safeList.get(2).getSafeUrl(),
+                                        Ivsafe[2], R.mipmap.safeicon2);
                                 Ivsafe[0].setVisibility(View.VISIBLE);
                                 Ivsafe[1].setVisibility(View.VISIBLE);
                                 Ivsafe[2].setVisibility(View.VISIBLE);

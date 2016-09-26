@@ -1,11 +1,12 @@
 package com.appstore.activity;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.slide_menu:
                 initView2();
-                startActivity(new Intent(this,CollectActivity.class));
+               // startActivity(new Intent(this,CollectActivity.class));
                 break;
         }
     }
