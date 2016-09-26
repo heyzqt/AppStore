@@ -20,7 +20,6 @@ public class AppInfo implements Serializable {
     private String des;
     private String author;
     private String screen;
-    private String status;
 
     public String getScreen() {
         return screen;
@@ -126,14 +125,6 @@ public class AppInfo implements Serializable {
         this.des = des;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     @Override
     public String toString() {
         return "AppInfo{" +
@@ -150,7 +141,6 @@ public class AppInfo implements Serializable {
                 ", des='" + des + '\'' +
                 ", author='" + author + '\'' +
                 ", screen='" + screen + '\'' +
-                ", status='" + status + '\'' +
                 '}';
     }
 }

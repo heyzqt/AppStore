@@ -1,16 +1,16 @@
 package com.appstore.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,10 +18,15 @@ import android.widget.Toast;
 import com.appstore.R;
 import com.appstore.StoreApplication;
 import com.appstore.adapter.SafeAdapter;
+import com.appstore.dbutils.DBHelper;
 import com.appstore.entity.AppInfo;
+import com.appstore.entity.DownLoadInfo;
 import com.appstore.entity.Safe;
+import com.appstore.utils.DataUtils;
 import com.appstore.utils.ImgUtils;
 import com.appstore.widget.NoScrollListView;
+import com.lidroid.xutils.db.sqlite.Selector;
+import com.lidroid.xutils.exception.DbException;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -30,7 +35,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +43,7 @@ import static com.appstore.R.id.details_collect;
 /**
  * Created by 张艳琴 on 2016/9/19.
  */
-public class AppDetailsActvity extends AppCompatActivity implements View.OnClickListener {
+public class AppDetailsActvity extends BaseActivity implements View.OnClickListener {
     NoScrollListView lv;
     ImageView Ivback;
     ImageView Ivicon;
@@ -55,14 +59,20 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
     TextView Tvdes;
     TextView Tvaurth;
     Button Btcollect;
-    Button Btdownload;
     Button Btshare;
     AppInfo appinfo;
     private ViewPager viewPager;
     private ImageView[] mImageViews;
+    private ProgressBar mProgressbar;
+    private TextView mTvDownload;
 
     SafeAdapter safeAdapter;
     List<Safe> safeList = null;
+    DownLoadInfo mDownloadInfo;
+
+    private static final String TAG = "hello";
+
+    private static final int UPDATE_INFO = 1234;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,28 +94,115 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
         Tvdes = (TextView) findViewById(R.id.details_des);
         Tvaurth = (TextView) findViewById(R.id.details_aurth);
         Btcollect = (Button) findViewById(details_collect);
-        Btdownload = (Button) findViewById(R.id.details_download);
         Btshare = (Button) findViewById(R.id.details_share);
         lv = (NoScrollListView) findViewById(R.id.safe_listview);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
+        mProgressbar = (ProgressBar) findViewById(R.id.progressBar);
+        mTvDownload = (TextView) findViewById(R.id.tv_progress);
+
+        mProgressbar.setMax(100);
         viewPager.setPageMargin(20);
         viewPager.setVisibility(View.GONE);
         appinfo = new AppInfo();
         initData();
         Ivdown1.setTag("off");
         Ivdown.setTag("off");
+        mTvDownload.setOnClickListener(this);
         Ivdown.setOnClickListener(this);
         Ivdown1.setOnClickListener(this);
         Ivback.setOnClickListener(this);
         Btcollect.setOnClickListener(this);
         Btshare.setOnClickListener(this);
-        Btdownload.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //bindDownloadService();
+        mService.setAppInfo(appinfo);
+        bindDownloadService();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unbindDownloadService();
+        try {
+            if (mDownloadInfo!=null){
+                mApp.dbHelper.saveOrUpdate(mDownloadInfo);
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void publish(int progress) {
+        mProgressbar.setProgress(progress);
+        Message msg = Message.obtain();
+        msg.what = UPDATE_INFO;
+        msg.arg1 = progress;
+        mHandler.sendMessageDelayed(msg,200);
+    }
+
+    Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if(msg.what == UPDATE_INFO){
+                int progress = msg.arg1;
+
+                switch (mDownloadInfo.getStatus()){
+                    //APP未被下载
+                    case DownloadService.DOWN_UNLOAD:
+                        mTvDownload.setText("下载");
+                        break;
+                    //APP正在下载
+                    case DownloadService.DOWN_LOADING:
+                        mTvDownload.setText(progress + "%");
+                        break;
+                    //APP暂停下载
+                    case DownloadService.DOWN_PAUSE:
+                        mTvDownload.setText("继续下载");
+                        break;
+                    //APP下载完成
+                    case DownloadService.DOWN_FINISHED:
+                        mTvDownload.setText("下载完成");
+                        break;
+                }
+            }
+        }
+    };
+
+    @Override
+    public void change(AppInfo appInfo) {
+        Log.i(TAG, "change: 商品详情");
+
+        //从DownLoad表中搜索是否有这个下载对象
+        try {
+            mDownloadInfo = DBHelper.getInstance(mApp).findFirst(Selector.from(DownLoadInfo.class).where("appId","=",appinfo.getId()+""));
+            if(mDownloadInfo==null){
+                mTvDownload.setText("下载");
+            }else{
+                if (mDownloadInfo.getStatus() == DownloadService.DOWN_UNLOAD) {
+                    mTvDownload.setText("下载");
+                } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_PAUSE) {
+                    mTvDownload.setText("继续下载");
+                } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_WAITTING) {
+                    mTvDownload.setText("等待下载");
+                }else if(mDownloadInfo.getStatus() == DownloadService.DOWN_FINISHED){
+                    mTvDownload.setText("下载完成");
+                }
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initData() {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
-        params.put("packageName",getIntent().getStringExtra("comname"));
+        params.put("packageName", getIntent().getStringExtra("comname"));
         String url = getResources().getString(R.string.ip_address) + "detail";
         client.get(url, params, new AsyncHttpResponseHandler() {
             @Override
@@ -151,6 +248,7 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
             @Override
             public void onFailure(Throwable throwable, String s) {
                 Toast.makeText(AppDetailsActvity.this, "网络连接失败", Toast.LENGTH_LONG).show();
+                mDownloadInfo = null;
                 super.onFailure(throwable, s);
             }
         });
@@ -168,7 +266,7 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
                     Ivdown.setImageResource(R.mipmap.arrow_up);
                     lv.setVisibility(View.VISIBLE);
                     Ivdown.setTag("on");
-                }else{
+                } else {
                     Ivdown.setImageResource(R.mipmap.arrow_down);
                     lv.setVisibility(View.GONE);
                     Ivdown.setTag("off");
@@ -179,7 +277,7 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
                     Ivdown1.setImageResource(R.mipmap.arrow_up);
                     Tvdes.setMaxLines(500);
                     Ivdown1.setTag("on");
-                }else{
+                } else {
                     Ivdown1.setImageResource(R.mipmap.arrow_down);
                     Tvdes.setMaxLines(5);
                     Ivdown1.setTag("off");
@@ -189,14 +287,53 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
             case R.id.details_collect:
                 Toast.makeText(this, "收藏成功！", Toast.LENGTH_LONG).show();
                 break;
-            case R.id.details_download:
-                //开始下载
-                Toast.makeText(this, "开始下载！", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(this,CollectActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("appinfo", (Serializable) appinfo);
-                intent.putExtras(bundle);
-                startActivity(intent);
+            //下载按钮
+            case R.id.tv_progress:
+                if (mDownloadInfo == null){
+                    int num = mService.getDownWaitting();
+                    if (num == 4) {
+                        Toast.makeText(AppDetailsActvity.this, "已有5个应用在下载队列,请等待", Toast.LENGTH_SHORT).show();
+                    }else{
+                        mTvDownload.setText("下载");
+                        mDownloadInfo = DataUtils.convertAppInfoToDownloadInfo(appinfo,DownloadService.DOWN_LOADING);
+                        mDownloadInfo.setStatus(DownloadService.DOWN_LOADING);
+                        mService.setDownLoadInfo(mDownloadInfo);
+                        mService.mDownLoadInfos.add(mDownloadInfo);
+                        mService.downloadAPP(appinfo);
+                        try {
+                            mApp.dbHelper.save(mDownloadInfo);
+                        } catch (DbException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }else{
+                    switch (mDownloadInfo.getStatus()){
+                        //APP未被下载
+                        case DownloadService.DOWN_UNLOAD:
+                            mDownloadInfo.setStatus(DownloadService.DOWN_LOADING);
+                            mService.downloadAPP(appinfo);
+                            break;
+                        //APP正在下载
+                        case DownloadService.DOWN_LOADING:
+                            mDownloadInfo.setStatus(DownloadService.DOWN_PAUSE);
+                            mService.downloadAPP(appinfo);
+                            break;
+                        //APP等待下载
+                        case DownloadService.DOWN_WAITTING:
+                            Toast.makeText(AppDetailsActvity.this, "等待下载", Toast.LENGTH_SHORT).show();
+                            break;
+                        //APP暂停下载
+                        case DownloadService.DOWN_PAUSE:
+                            mDownloadInfo.setStatus(DownloadService.DOWN_LOADING);
+                            mService.downloadAPP(appinfo);
+                            break;
+                        //APP下载完成
+                        case DownloadService.DOWN_FINISHED:
+                            Toast.makeText(AppDetailsActvity.this, "APP已下载完成", Toast.LENGTH_SHORT).show();
+                            mTvDownload.setText("下载完成");
+                            break;
+                    }
+                }
                 break;
             case R.id.details_share:
                 Toast.makeText(this, "分享成功！", Toast.LENGTH_LONG).show();
@@ -218,7 +355,7 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
                             format((Double.parseDouble(appinfo.getSize()) / (1024 * 1024))) + "MB");
                     Tvdes.setText(appinfo.getDes());
                     Tvaurth.setText(appinfo.getAuthor());
-                    ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + appinfo.getIconUrl(), Ivicon,R.mipmap.safedesurl0);
+                    ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + appinfo.getIconUrl(), Ivicon, R.mipmap.safedesurl0);
                     //将图片装载到数组中
 
                     JSONArray jsonArray = null;
@@ -228,10 +365,10 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
                         e.printStackTrace();
                     }
                     mImageViews = new ImageView[jsonArray.length()];
-                    for(int i=0; i<mImageViews.length; i++){
+                    for (int i = 0; i < mImageViews.length; i++) {
                         ImageView imageView = new ImageView(AppDetailsActvity.this);
                         mImageViews[i] = imageView;
-                        ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS+"image?name="+jsonArray.optString(i),imageView,R.mipmap.screen0);
+                        ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS + "image?name=" + jsonArray.optString(i), imageView, R.mipmap.screen0);
                     }
                     viewPager.setAdapter(new ScreenAdapter());
                     viewPager.setCurrentItem((mImageViews.length) * 100);
@@ -298,9 +435,9 @@ public class AppDetailsActvity extends AppCompatActivity implements View.OnClick
         @Override
         public Object instantiateItem(View container, int position) {
             try {
-                ImageView views=mImageViews[position % mImageViews.length];
-                ((ViewPager)container).addView(views, 0);
-            }catch(Exception e){
+                ImageView views = mImageViews[position % mImageViews.length];
+                ((ViewPager) container).addView(views, 0);
+            } catch (Exception e) {
             }
             return mImageViews[position % mImageViews.length];
         }

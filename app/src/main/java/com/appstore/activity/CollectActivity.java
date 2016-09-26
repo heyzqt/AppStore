@@ -129,9 +129,9 @@ public class CollectActivity extends BaseActivity implements View.OnClickListene
         switch (v.getId()) {
             case R.id.button_down:
                 if(mService==null){
-                    Log.i(TAG, "initView: service null");
+                    Log.i(TAG, "onclick: service null");
                 }else{
-                    Log.i(TAG, "initView: service 不为 null");
+                    Log.i(TAG, "onclick: service 不为 null");
                     mService.downloadAPP(mAppInfo);
                 }
 
