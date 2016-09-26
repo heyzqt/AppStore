@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.appstore.R;
 import com.appstore.activity.AppDetailsActvity;
 import com.appstore.adapter.ListViewAdapter;
+import com.appstore.widget.XListView2;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;

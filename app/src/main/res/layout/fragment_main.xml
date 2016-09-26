@@ -38,7 +38,7 @@
                 android:focusableInTouchMode="true"
                 android:orientation="vertical">
 
-                <com.appstore.fragment.XListView
+                <com.appstore.widget.XListView
                     android:id="@+id/mf_mainlistview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

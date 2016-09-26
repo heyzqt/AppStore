@@ -6,7 +6,7 @@
  * @description An ListView support (a) Pull down to refresh, (b) Pull up to load more.
  * 		Implement IXListViewListener, and see stopRefresh() / stopLoadMore().
  */
-package com.appstore.fragment;
+package com.appstore.widget;
 
 
 import android.content.Context;
@@ -24,32 +24,30 @@ import android.widget.Scroller;
 import android.widget.TextView;
 
 import com.appstore.R;
-public class XListView2 extends ListView implements OnScrollListener {
+import com.appstore.widget.XListViewFooter;
+import com.appstore.widget.XListViewHeader;
+
+public class XListView extends ListView implements OnScrollListener {
 
 	private float mLastY = -1; // save event y
 	private Scroller mScroller; // used for scroll back
 	private OnScrollListener mScrollListener; // user's scroll listener
 
-	// the interface to trigger refresh and load more.
 	private IXListViewListener mListViewListener;
 
 	// -- header view
 	private XListViewHeader mHeaderView;
-	// header view content, use it to calculate the Header's height. And hide it
-	// when disable pull refresh.
 	private RelativeLayout mHeaderViewContent;
 	private TextView mHeaderTimeView;
 	private int mHeaderViewHeight; // header view's height
 	private boolean mEnablePullRefresh = true;
 	private boolean mPullRefreshing = false; // is refreashing.
 
-	// -- footer view
 	private XListViewFooter mFooterView;
 	private boolean mEnablePullLoad;
 	private boolean mPullLoading;
 	private boolean mIsFooterReady = false;
 	
-	// total list items, used to detect is at the bottom of listview.
 	private int mTotalItemCount;
 
 	// for mScroller, scroll back from header or footer.
@@ -67,28 +65,26 @@ public class XListView2 extends ListView implements OnScrollListener {
 	/**
 	 * @param context
 	 */
-	public XListView2(Context context) {
+	public XListView(Context context) {
 		super(context);
 		initWithContext(context);
 	}
 
-	public XListView2(Context context, AttributeSet attrs) {
+	public XListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		initWithContext(context);
 	}
 
-	public XListView2(Context context, AttributeSet attrs, int defStyle) {
+	public XListView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		initWithContext(context);
 	}
 
 	private void initWithContext(Context context) {
 		mScroller = new Scroller(context, new DecelerateInterpolator());
-		// XListView need the scroll event, and it will dispatch the event to
-		// user's listener (as a proxy).
+
 		super.setOnScrollListener(this);
 
-		// init header view
 		mHeaderView = new XListViewHeader(context);
 		mHeaderViewContent = (RelativeLayout) mHeaderView
 				.findViewById(R.id.xlistview_header_content);
@@ -377,11 +373,11 @@ public class XListView2 extends ListView implements OnScrollListener {
 		public void onLoadMore();
 	}
 
-	/*@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+	@Override
+protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE>>2,MeasureSpec.AT_MOST);
 		super.onMeasure(widthMeasureSpec,expandSpec);
 
-	}*/
+	}
 
 }
