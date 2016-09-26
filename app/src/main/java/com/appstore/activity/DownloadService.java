@@ -84,7 +84,7 @@ public class DownloadService extends Service {
 
     private StoreApplication mStoreAPP;
 
-    public static final int DOWN_UNLOAD = 0;      //未下载
+    public static final int DOWN_UNLOAD = 0x0;      //未下载
     public static final int DOWN_LOADING = 0x2;     //正在下载
     public static final int DOWN_PAUSE = 0x3;       //暂停下载
     public static final int DOWN_FINISHED = 0x4;    //完成下载
@@ -119,7 +119,6 @@ public class DownloadService extends Service {
             e.printStackTrace();
             mDownLoadInfos = null;
         }
-        Log.i(TAG, "Service 创建");
     }
 
     //更新下载状态接口
@@ -142,11 +141,11 @@ public class DownloadService extends Service {
 
         String url = StoreApplication.IP_ADDRESS + "download?name=" + appInfo.getDownloadUrl() + "&&range=";
         String filename = appInfo.getPackageName() + ".apk";
-        if (isDownloading) {
-            isDownloading = false;
-        } else {
-            isDownloading = true;
-        }
+//        if (isDownloading) {
+//            isDownloading = false;
+//        } else {
+//            isDownloading = true;
+//        }
 
         setAppInfo(appInfo);
         final File file = new File(mPath, filename);
@@ -209,7 +208,12 @@ public class DownloadService extends Service {
                 //从输入流中读出字节流,再写入文件
                 while ((read = input.read(b, 0, 1024)) > 0) {
                     if (!isDownloading) {
-                        mDownLoadInfo.setStatus(DOWN_PAUSE);
+                        long cur = inFile.length();
+                        String result = new DecimalFormat("0.00").format((double) cur / contentLength);
+                        double d = Double.parseDouble(result);
+                        int i = (int) (d * 100);
+                        mDownLoadInfo.setPos(i);
+                        mStoreAPP.dbHelper.saveOrUpdate(mDownLoadInfo);
                         return;
                     }
                     inFile.write(b, 0, read);
@@ -221,10 +225,12 @@ public class DownloadService extends Service {
                     msg.setData(bundle);
                     mHandler.sendMessageDelayed(msg, 200);
                 }
+                Log.i(TAG, "run: 下载完成");
                 conn.disconnect();
                 mDownLoadInfo.setStatus(DOWN_FINISHED);
                 mStoreAPP.dbHelper.saveOrUpdate(mDownLoadInfo);
             } catch (IOException e) {
+                Log.i(TAG, "run: IOException");
                 conn.disconnect();
                 mDownLoadInfo.setStatus(DOWN_FINISHED);
                 try {
@@ -250,6 +256,12 @@ public class DownloadService extends Service {
                 String result = new DecimalFormat("0.00").format((double) current / total);
                 double d = Double.parseDouble(result);
                 int i = (int) (d * 100);
+                mDownLoadInfo.setPos(i);
+                try {
+                    mStoreAPP.dbHelper.saveOrUpdate(mDownLoadInfo);
+                } catch (DbException e) {
+                    e.printStackTrace();
+                }
                 mDownloadUpdateListener.onPublish(i);
             }
         }

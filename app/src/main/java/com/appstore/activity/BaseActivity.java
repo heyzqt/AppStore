@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.appstore.StoreApplication;
 import com.appstore.entity.DownLoadInfo;
@@ -36,7 +35,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
             mService.setDownloadUpdateListener(mDownloadUpdateListener);
             mDownloadUpdateListener.onChange(mService.getDownLoadInfo());
-            Log.i("hello", "onServiceConnected: Service连接");
         }
 
         @Override
@@ -53,7 +51,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             Intent intent = new Intent(this, DownloadService.class);
             bindService(intent, serviceConn, Context.BIND_AUTO_CREATE);
             isBound = true;
-            Log.i("hello", "bindDownloadService: 绑定服务");
         }
     }
 

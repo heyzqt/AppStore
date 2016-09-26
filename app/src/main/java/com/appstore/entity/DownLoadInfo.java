@@ -8,6 +8,7 @@ public class DownLoadInfo {
     private int id;
     private String appId;
     private String packagename;
+    private int pos;
     private int status;
 
     public int getId() {
@@ -42,12 +43,21 @@ public class DownLoadInfo {
         this.status = status;
     }
 
+    public int getPos() {
+        return pos;
+    }
+
+    public void setPos(int pos) {
+        this.pos = pos;
+    }
+
     @Override
     public String toString() {
         return "DownLoadInfo{" +
                 "id=" + id +
                 ", appId='" + appId + '\'' +
                 ", packagename='" + packagename + '\'' +
+                ", pos=" + pos +
                 ", status=" + status +
                 '}';
     }
