@@ -23,6 +23,7 @@ import com.appstore.R;
 import com.appstore.activity.AppDetailsActvity;
 import com.appstore.adapter.ImgLoaders;
 import com.appstore.adapter.ListViewAdapter;
+import com.appstore.widget.XListView;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.StaticPagerAdapter;
 import com.jude.rollviewpager.hintview.ColorPointHintView;

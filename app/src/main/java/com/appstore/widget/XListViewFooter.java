@@ -4,7 +4,7 @@
  * @author Maxwin
  * @description XListView's footer
  */
-package com.appstore.fragment;
+package com.appstore.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
