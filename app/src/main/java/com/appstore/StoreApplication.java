@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.appstore.activity.DownloadService;
+import com.appstore.dbutils.DBHelper;
+import com.lidroid.xutils.DbUtils;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -34,6 +36,11 @@ public class StoreApplication extends Application {
 
     public SharedPreferences.Editor editor;
 
+    /**
+     * 数据库操作对象
+     */
+    public DbUtils dbHelper;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -42,6 +49,8 @@ public class StoreApplication extends Application {
 
         sp = getSharedPreferences("AppStore", Context.MODE_PRIVATE);
         editor = sp.edit();
+
+        dbHelper = DBHelper.getInstance(this);
 
         //启动服务
         startService(new Intent(this, DownloadService.class));

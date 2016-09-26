@@ -7,8 +7,7 @@ public class DownLoadInfo {
 
     private int id;
     private String appId;
-    private String appname;
-    private String packagename;
+    private int status;
 
     public int getId() {
         return id;
@@ -26,19 +25,11 @@ public class DownLoadInfo {
         this.appId = appId;
     }
 
-    public String getPackagename() {
-        return packagename;
+    public int getStatus() {
+        return status;
     }
 
-    public void setPackagename(String packagename) {
-        this.packagename = packagename;
-    }
-
-    public String getAppname() {
-        return appname;
-    }
-
-    public void setAppname(String appname) {
-        this.appname = appname;
+    public void setStatus(int status) {
+        this.status = status;
     }
 }
