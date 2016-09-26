@@ -1,11 +1,11 @@
 package com.appstore.entity;
 
-import java.util.Arrays;
+import java.io.Serializable;
 
 /**
  * Created by 张艳琴 on 2016/9/19.
  */
-public class AppInfo {
+public class AppInfo implements Serializable {
 
     private int id;
     private String name;
@@ -20,6 +20,7 @@ public class AppInfo {
     private String des;
     private String author;
     private String screen;
+    private String status;
 
     public String getScreen() {
         return screen;
@@ -125,6 +126,14 @@ public class AppInfo {
         this.des = des;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "AppInfo{" +
@@ -141,6 +150,7 @@ public class AppInfo {
                 ", des='" + des + '\'' +
                 ", author='" + author + '\'' +
                 ", screen='" + screen + '\'' +
+                ", status='" + status + '\'' +
                 '}';
     }
 }

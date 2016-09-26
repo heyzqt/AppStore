@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.appstore.entity.AppInfo;
+import com.appstore.entity.DownLoadInfo;
 import com.lidroid.xutils.DbUtils;
 import com.lidroid.xutils.exception.DbException;
 /**
@@ -19,11 +20,12 @@ public class DBHelper {
             synchronized (DBHelper.class) {
                 if (db == null) {
                     DbUtils.DaoConfig config = new DbUtils.DaoConfig(context);
-                    config.setDbName("zcc"); //数据库名
+                    config.setDbName("appstore"); //数据库名
                     config.setDbVersion(1);  //版本
                     db = DbUtils.create(config);
                     try {//创建表
                         db.createTableIfNotExist(AppInfo.class);
+                        db.createTableIfNotExist(DownLoadInfo.class);
                         db.configAllowTransaction(true);
                     } catch (DbException e) {
                         Toast.makeText(context, "创建表失败！", Toast.LENGTH_SHORT).show();
