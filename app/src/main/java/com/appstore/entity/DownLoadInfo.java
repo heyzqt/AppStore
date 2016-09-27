@@ -1,5 +1,7 @@
 package com.appstore.entity;
 
+import com.appstore.activity.DownloadService;
+
 /**
  * Created by heyzqt on 2016/9/25.
  */
@@ -9,7 +11,7 @@ public class DownLoadInfo {
     private String appId;
     private String packagename;
     private int pos;
-    private int status;
+    private int status = DownloadService.DOWN_UNLOAD;
 
     public int getId() {
         return id;

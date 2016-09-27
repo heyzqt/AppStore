@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.appstore.StoreApplication;
-import com.appstore.dbutils.DBHelper;
 import com.appstore.entity.AppInfo;
 import com.appstore.entity.DownLoadInfo;
 import com.lidroid.xutils.db.sqlite.Selector;
@@ -38,7 +37,9 @@ public class DownloadService extends Service {
     /**
      * 下载对象列表
      */
-    public List<DownLoadInfo> mDownLoadInfos = new ArrayList<>();
+    public List<DownLoadInfo> mWaittingInfos = new ArrayList<>();
+
+    public List<AppInfo> mAppInfos = new ArrayList<>();
 
     /**
      * 当前正在下载的对象
@@ -78,11 +79,20 @@ public class DownloadService extends Service {
     private static final String TAG = "hello";
 
     /**
-     * Single线程池
+     * APP下载线程池
      */
     private ExecutorService mExecutor = Executors.newSingleThreadExecutor();
 
+    /**
+     * APP下载排队线程池
+     */
+    //private ExecutorService mUpdateExecutor = Executors.newSingleThreadExecutor();
+
+    private MyRunnable mRunnable = null;
+
     private StoreApplication mStoreAPP;
+
+    private Handler updateHandler = new Handler();
 
     public static final int DOWN_UNLOAD = 0x0;      //未下载
     public static final int DOWN_LOADING = 0x2;     //正在下载
@@ -112,13 +122,13 @@ public class DownloadService extends Service {
         super.onCreate();
         mStoreAPP = (StoreApplication) getApplication();
         mPath = Environment.getExternalStorageDirectory().getPath() + "/AppStore/";
-        //获取当前下载列表
-        try {
-            mDownLoadInfos = DBHelper.getInstance(mStoreAPP).findAll(DownLoadInfo.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-            mDownLoadInfos = null;
-        }
+//        //获取当前下载列表
+//        try {
+//            mDownLoadInfos = DBHelper.getInstance(mStoreAPP).findAll(DownLoadInfo.class);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            mDownLoadInfos = null;
+//        }
     }
 
     //更新下载状态接口
@@ -141,11 +151,6 @@ public class DownloadService extends Service {
 
         String url = StoreApplication.IP_ADDRESS + "download?name=" + appInfo.getDownloadUrl() + "&&range=";
         String filename = appInfo.getPackageName() + ".apk";
-//        if (isDownloading) {
-//            isDownloading = false;
-//        } else {
-//            isDownloading = true;
-//        }
 
         setAppInfo(appInfo);
         final File file = new File(mPath, filename);
@@ -174,8 +179,38 @@ public class DownloadService extends Service {
      * @param savePathAndFile
      */
     private void down(final String url, final long pos, final String savePathAndFile) {
-        MyRunnable runnable = new MyRunnable(url, pos, savePathAndFile);
-        mExecutor.execute(runnable);
+//        if (mRunnable != null && mDownLoadInfo.getStatus() == DOWN_FINISHED) {
+//            mExecutor.shutdown();
+//            Log.e(TAG, "down: status====" + mExecutor.isShutdown());
+//        }
+
+        mRunnable = new MyRunnable(url, pos, savePathAndFile);
+        mExecutor.execute(mRunnable);
+//
+//        switch (mDownLoadInfo.getStatus()) {
+//            case DOWN_UNLOAD:
+//                mDownLoadInfo.setStatus(DOWN_LOADING);
+//                mRunnable = new MyRunnable(url, pos, savePathAndFile);
+//                mExecutor.execute(mRunnable);
+//                break;
+//            case DOWN_LOADING:
+//                if (mRunnable == null) {
+//                    mRunnable = new MyRunnable(url, pos, savePathAndFile);
+//                } else {
+//                    mRunnable.setPos(pos);
+//                }
+//                mExecutor.execute(mRunnable);
+//                break;
+//            case DOWN_PAUSE:
+//                if (mRunnable == null) {
+//                    mRunnable = new MyRunnable(url, pos, savePathAndFile);
+//                }
+//                mExecutor.execute(mRunnable);
+//                break;
+//            default:
+//                break;
+//        }
+//        Log.e(TAG, "runnable====" + mRunnable.toString());
     }
 
     /**
@@ -193,8 +228,15 @@ public class DownloadService extends Service {
             this.savePathAndFile = savePathAndFile;
         }
 
+        public void setPos(long pos) {
+            this.pos = pos;
+        }
+
         @Override
         public void run() {
+
+            //if(mDownloadUpdateListener!=null&&mDownLoadInfo!=null&&isDownloading){}
+
             HttpURLConnection conn = null;
             try {
                 conn = (HttpURLConnection) new URL(url).openConnection();
@@ -208,12 +250,6 @@ public class DownloadService extends Service {
                 //从输入流中读出字节流,再写入文件
                 while ((read = input.read(b, 0, 1024)) > 0) {
                     if (!isDownloading) {
-                        long cur = inFile.length();
-                        String result = new DecimalFormat("0.00").format((double) cur / contentLength);
-                        double d = Double.parseDouble(result);
-                        int i = (int) (d * 100);
-                        mDownLoadInfo.setPos(i);
-                        mStoreAPP.dbHelper.saveOrUpdate(mDownLoadInfo);
                         return;
                     }
                     inFile.write(b, 0, read);
@@ -225,21 +261,16 @@ public class DownloadService extends Service {
                     msg.setData(bundle);
                     mHandler.sendMessageDelayed(msg, 200);
                 }
-                Log.i(TAG, "run: 下载完成");
                 conn.disconnect();
-                mDownLoadInfo.setStatus(DOWN_FINISHED);
-                mStoreAPP.dbHelper.saveOrUpdate(mDownLoadInfo);
+                mHandler.sendEmptyMessage(2);
             } catch (IOException e) {
-                Log.i(TAG, "run: IOException");
                 conn.disconnect();
-                mDownLoadInfo.setStatus(DOWN_FINISHED);
                 try {
+                    mDownLoadInfo.setStatus(DOWN_FINISHED);
                     mStoreAPP.dbHelper.saveOrUpdate(mDownLoadInfo);
                 } catch (DbException e1) {
                     e1.printStackTrace();
                 }
-                e.printStackTrace();
-            } catch (DbException e) {
                 e.printStackTrace();
             }
         }
@@ -249,23 +280,73 @@ public class DownloadService extends Service {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what == 1) {
-                Bundle bundle = msg.getData();
-                long current = bundle.getLong("current");
-                long total = bundle.getLong("total");
-                String result = new DecimalFormat("0.00").format((double) current / total);
-                double d = Double.parseDouble(result);
-                int i = (int) (d * 100);
-                mDownLoadInfo.setPos(i);
-                try {
-                    mStoreAPP.dbHelper.saveOrUpdate(mDownLoadInfo);
-                } catch (DbException e) {
-                    e.printStackTrace();
-                }
-                mDownloadUpdateListener.onPublish(i);
+            switch (msg.what) {
+                case 1:
+                    Bundle bundle = msg.getData();
+                    long current = bundle.getLong("current");
+                    long total = bundle.getLong("total");
+                    String result = new DecimalFormat("0.00").format((double) current / total);
+                    double d = Double.parseDouble(result);
+                    int i = (int) (d * 100);
+                    mDownLoadInfo.setPos(i);
+                    try {
+                        if (i == 100) {
+                            mDownLoadInfo.setStatus(DOWN_FINISHED);
+                            mStoreAPP.dbHelper.saveOrUpdate(mDownLoadInfo);
+                        }else{
+                            mDownLoadInfo.setPos(i);
+                        }
+                    } catch (DbException e) {
+                        e.printStackTrace();
+                    }
+
+//                    if (mDownloadUpdateListener != null && mDownLoadInfo != null && isDownloading == true) {
+//
+//                    }
+                    mDownloadUpdateListener.onPublish(i);
+                    break;
+                case 2:
+                    //从等待队列中取出第一个APP来下载
+                    if (mWaittingInfos != null && mWaittingInfos.size() > 0) {
+                        DownLoadInfo waitInfo = mWaittingInfos.get(0);
+                        if (waitInfo != null) {
+                            AppInfo appInfo = mAppInfos.get(0);
+                            mWaittingInfos.remove(0);
+                            mAppInfos.remove(0);
+                            waitInfo.setStatus(DOWN_LOADING);
+                            isDownloading = true;
+                            mDownLoadInfo = waitInfo;
+                            downloadAPP(appInfo);
+                        }
+                    }
+                    break;
             }
         }
     };
+
+    /**
+     * 是否有APP正在下载
+     *
+     * @return
+     */
+    public boolean isAPPLoading() {
+        try {
+            DownLoadInfo downLoadingInfo = mStoreAPP.dbHelper.findFirst(Selector.from(DownLoadInfo.class).where("status", "=", DOWN_LOADING));
+            DownLoadInfo downPausedInfo = mStoreAPP.dbHelper.findFirst(Selector.from(DownLoadInfo.class).where("status", "=", DOWN_PAUSE));
+            if (downLoadingInfo != null || downPausedInfo != null) {
+                if (downLoadingInfo != null) {
+                    Log.i(TAG, "isAPPLoading: " + downLoadingInfo.toString());
+                }
+                if (downPausedInfo != null) {
+                    Log.i(TAG, "isAPPLoading: " + downPausedInfo.toString());
+                }
+                return true;
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     /**
      * 获取正在等待下载的APP数
@@ -329,5 +410,13 @@ public class DownloadService extends Service {
         } catch (DbException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<DownLoadInfo> getmWaittingInfos() {
+        return mWaittingInfos;
+    }
+
+    public void setmWaittingInfos(List<DownLoadInfo> mWaittingInfos) {
+        this.mWaittingInfos = mWaittingInfos;
     }
 }

@@ -120,6 +120,8 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
         Btcollect.setOnClickListener(this);
         Btshare.setOnClickListener(this);
 
+        Log.e(TAG, "initView: update update download UI");
+
         //更新下载UI
         String packagename = getIntent().getStringExtra("comname");
         //从DownLoad表中搜索是否有这个下载对象
@@ -133,42 +135,61 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
                 } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_PAUSE) {
                     mTvDownload.setText("继续下载");
                     mProgressbar.setProgress(mDownloadInfo.getPos());
-                } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_LOADING) {
-                    mProgressbar.setProgress(mDownloadInfo.getPos());
-                    mTvDownload.setText(mDownloadInfo.getPos() + "%");
                 } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_WAITTING) {
                     mTvDownload.setText("等待下载");
                 } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_FINISHED) {
                     mTvDownload.setText("下载完成");
                     //mProgressbar.setBackgroundColor(getResources().getColor(R.color.color_main));
                 }
+
+
+                //        if (mDownloadInfo != null && mDownloadInfo.getStatus() == DownloadService.DOWN_LOADING) {
+//            mService.isDownloading = true;
+//            mProgressbar.setProgress(mDownloadInfo.getPos());
+//            mTvDownload.setText(mDownloadInfo.getPos() + "%");
+//            mService.downloadAPP(appinfo);
+//        }
             }
         } catch (DbException e) {
             e.printStackTrace();
         }
+
+        Log.e(TAG, "oncreate");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         bindDownloadService();
+        Log.e(TAG, "onResume: ");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unbindDownloadService();
+        try {
+            if (mService.mDownLoadInfo != null) {
+                mApp.dbHelper.saveOrUpdate(mService.mDownLoadInfo);
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        //unbindDownloadService();
+        Log.e(TAG, "onPause: ");
     }
 
     @Override
     public void publish(int progress) {
-        Log.i(TAG, "publish: progress=" + progress);
-        mProgressbar.setProgress(progress);
-        mCurrentPos = progress;
-        Message msg = Message.obtain();
-        msg.what = UPDATE_INFO;
-        msg.arg1 = progress;
-        mHandler.sendMessageDelayed(msg, 200);
+
+        if (mDownloadInfo != null && mDownloadInfo == mService.mDownLoadInfo) {
+            Log.i(TAG, "publish: progress=" + progress);
+            mProgressbar.setProgress(progress);
+            mCurrentPos = progress;
+            Message msg = Message.obtain();
+            msg.what = UPDATE_INFO;
+            msg.arg1 = progress;
+            mHandler.sendMessageDelayed(msg, 200);
+        }
     }
 
     Handler mHandler = new Handler() {
@@ -206,6 +227,24 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void change(DownLoadInfo downLoadInfo) {
+//        Log.i(TAG, "change: ");
+//        if(downLoadInfo!=null){
+//            Log.e(TAG, "change: downLoadInfo==="+downLoadInfo.toString());
+//        }
+//        if(mDownloadInfo!=null){
+//            Log.e(TAG, "change: mDownloadInfo==="+mDownloadInfo.toString());
+//        }
+        Log.e(TAG, "change: ");
+        if (mDownloadInfo != null && mDownloadInfo.getStatus() == DownloadService.DOWN_LOADING) {
+            mProgressbar.setProgress(mDownloadInfo.getPos());
+            mTvDownload.setText(mDownloadInfo.getPos() + "%");
+            if (mService.getAppInfo() != null) {
+                Log.e(TAG, "change更新ui:" + mService.getAppInfo().toString());
+                mDownloadInfo.setStatus(DownloadService.DOWN_LOADING);
+                mService.isDownloading = true;
+                mService.downloadAPP(mService.getAppInfo());
+            }
+        }
     }
 
     private void initData() {
@@ -278,24 +317,33 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
                     if (num == 4) {
                         Toast.makeText(AppDetailsActvity.this, "已有5个应用在下载队列,请等待", Toast.LENGTH_SHORT).show();
                     } else {
-                        mDownloadInfo = DataUtils.convertAppInfoToDownloadInfo(appinfo, DownloadService.DOWN_LOADING);
-                        mDownloadInfo.setStatus(DownloadService.DOWN_LOADING);
-                        mService.setDownLoadInfo(mDownloadInfo);
-                        mService.isDownloading = true;
-                        //mService.mDownLoadInfos.add(mDownloadInfo);
-                        mService.downloadAPP(appinfo);
-                        try {
-                            mApp.dbHelper.save(mDownloadInfo);
-                        } catch (DbException e) {
-                            e.printStackTrace();
+                        mDownloadInfo = DataUtils.convertAppInfoToDownloadInfo(appinfo, DownloadService.DOWN_UNLOAD);
+                        if (mService.isAPPLoading()) {
+                            try {
+                                mDownloadInfo.setStatus(DownloadService.DOWN_WAITTING);
+                                mService.mWaittingInfos.add(mDownloadInfo);
+                                mService.mAppInfos.add(appinfo);
+                                mApp.dbHelper.saveOrUpdate(mDownloadInfo);
+                                mTvDownload.setText("等待下载..");
+                            } catch (DbException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            mDownloadInfo.setStatus(DownloadService.DOWN_LOADING);
+                            mService.setDownLoadInfo(mDownloadInfo);
+                            mService.setAppInfo(appinfo);
+                            mService.isDownloading = true;
+                            mService.downloadAPP(appinfo);
                         }
                     }
                 } else {
+                    Log.e(TAG, "onClick: downstatus before click====" + mDownloadInfo.getStatus());
                     switch (mDownloadInfo.getStatus()) {
                         //APP未被下载
                         case DownloadService.DOWN_UNLOAD:
                             mDownloadInfo.setStatus(DownloadService.DOWN_LOADING);
                             mService.setDownLoadInfo(mDownloadInfo);
+                            mService.setAppInfo(appinfo);
                             mService.isDownloading = true;
                             mService.downloadAPP(appinfo);
                             break;

@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.appstore.StoreApplication;
 import com.appstore.entity.DownLoadInfo;
+import com.appstore.utils.ActivityCollector;
 
 /**
  * Created by heyzqt on 2016/9/25.
@@ -25,6 +26,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mApp = (StoreApplication) getApplication();
+        ActivityCollector.addActivity(this, getClass());
     }
 
     private ServiceConnection serviceConn = new ServiceConnection() {
@@ -34,6 +36,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             mService = downBinder.getService();
 
             mService.setDownloadUpdateListener(mDownloadUpdateListener);
+            //更新下载状态
             mDownloadUpdateListener.onChange(mService.getDownLoadInfo());
         }
 
@@ -62,6 +65,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             unbindService(serviceConn);
             isBound = false;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 
     private DownloadService.DownloadUpdateListener mDownloadUpdateListener = new DownloadService.DownloadUpdateListener() {
