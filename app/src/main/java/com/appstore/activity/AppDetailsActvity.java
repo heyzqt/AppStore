@@ -74,10 +74,16 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
 
     private static final int UPDATE_INFO = 1234;
 
+    private int mCurrentPos = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_details);
+        initView();
+    }
+
+    private void initView() {
         Ivback = (ImageView) findViewById(R.id.back);
         Ivicon = (ImageView) findViewById(R.id.details_icon);
         Tvname = (TextView) findViewById(R.id.details_name);
@@ -113,46 +119,87 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
         Ivback.setOnClickListener(this);
         Btcollect.setOnClickListener(this);
         Btshare.setOnClickListener(this);
+
+        Log.e(TAG, "initView: update update download UI");
+
+        //更新下载UI
+        String packagename = getIntent().getStringExtra("comname");
+        //从DownLoad表中搜索是否有这个下载对象
+        try {
+            mDownloadInfo = DBHelper.getInstance(mApp).findFirst(Selector.from(DownLoadInfo.class).where("packagename", "=", packagename));
+            if (mDownloadInfo == null) {
+                mTvDownload.setText("下载");
+            } else {
+                if (mDownloadInfo.getStatus() == DownloadService.DOWN_UNLOAD) {
+                    mTvDownload.setText("下载");
+                } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_PAUSE) {
+                    mTvDownload.setText("继续下载");
+                    mProgressbar.setProgress(mDownloadInfo.getPos());
+                } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_WAITTING) {
+                    mTvDownload.setText("等待下载");
+                } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_FINISHED) {
+                    mTvDownload.setText("下载完成");
+                    //mProgressbar.setBackgroundColor(getResources().getColor(R.color.color_main));
+                }
+
+
+                //        if (mDownloadInfo != null && mDownloadInfo.getStatus() == DownloadService.DOWN_LOADING) {
+//            mService.isDownloading = true;
+//            mProgressbar.setProgress(mDownloadInfo.getPos());
+//            mTvDownload.setText(mDownloadInfo.getPos() + "%");
+//            mService.downloadAPP(appinfo);
+//        }
+            }
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+
+        Log.e(TAG, "oncreate");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //bindDownloadService();
-        mService.setAppInfo(appinfo);
         bindDownloadService();
+        Log.e(TAG, "onResume: ");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unbindDownloadService();
         try {
-            if (mDownloadInfo!=null){
-                mApp.dbHelper.saveOrUpdate(mDownloadInfo);
+            if (mService.mDownLoadInfo != null) {
+                mApp.dbHelper.saveOrUpdate(mService.mDownLoadInfo);
             }
         } catch (DbException e) {
             e.printStackTrace();
         }
+        //unbindDownloadService();
+        Log.e(TAG, "onPause: ");
     }
 
     @Override
     public void publish(int progress) {
-        mProgressbar.setProgress(progress);
-        Message msg = Message.obtain();
-        msg.what = UPDATE_INFO;
-        msg.arg1 = progress;
-        mHandler.sendMessageDelayed(msg,200);
+
+        if (mDownloadInfo != null && mDownloadInfo == mService.mDownLoadInfo) {
+            Log.i(TAG, "publish: progress=" + progress);
+            mProgressbar.setProgress(progress);
+            mCurrentPos = progress;
+            Message msg = Message.obtain();
+            msg.what = UPDATE_INFO;
+            msg.arg1 = progress;
+            mHandler.sendMessageDelayed(msg, 200);
+        }
     }
 
-    Handler mHandler = new Handler(){
+    Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if(msg.what == UPDATE_INFO){
+            if (msg.what == UPDATE_INFO) {
                 int progress = msg.arg1;
 
-                switch (mDownloadInfo.getStatus()){
+                switch (mDownloadInfo.getStatus()) {
                     //APP未被下载
                     case DownloadService.DOWN_UNLOAD:
                         mTvDownload.setText("下载");
@@ -160,6 +207,10 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
                     //APP正在下载
                     case DownloadService.DOWN_LOADING:
                         mTvDownload.setText(progress + "%");
+                        if (progress == 100) {
+                            mTvDownload.setText("下载完成");
+                            mDownloadInfo.setStatus(DownloadService.DOWN_FINISHED);
+                        }
                         break;
                     //APP暂停下载
                     case DownloadService.DOWN_PAUSE:
@@ -175,27 +226,24 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
     };
 
     @Override
-    public void change(AppInfo appInfo) {
-        Log.i(TAG, "change: 商品详情");
-
-        //从DownLoad表中搜索是否有这个下载对象
-        try {
-            mDownloadInfo = DBHelper.getInstance(mApp).findFirst(Selector.from(DownLoadInfo.class).where("appId","=",appinfo.getId()+""));
-            if(mDownloadInfo==null){
-                mTvDownload.setText("下载");
-            }else{
-                if (mDownloadInfo.getStatus() == DownloadService.DOWN_UNLOAD) {
-                    mTvDownload.setText("下载");
-                } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_PAUSE) {
-                    mTvDownload.setText("继续下载");
-                } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_WAITTING) {
-                    mTvDownload.setText("等待下载");
-                }else if(mDownloadInfo.getStatus() == DownloadService.DOWN_FINISHED){
-                    mTvDownload.setText("下载完成");
-                }
+    public void change(DownLoadInfo downLoadInfo) {
+//        Log.i(TAG, "change: ");
+//        if(downLoadInfo!=null){
+//            Log.e(TAG, "change: downLoadInfo==="+downLoadInfo.toString());
+//        }
+//        if(mDownloadInfo!=null){
+//            Log.e(TAG, "change: mDownloadInfo==="+mDownloadInfo.toString());
+//        }
+        Log.e(TAG, "change: ");
+        if (mDownloadInfo != null && mDownloadInfo.getStatus() == DownloadService.DOWN_LOADING) {
+            mProgressbar.setProgress(mDownloadInfo.getPos());
+            mTvDownload.setText(mDownloadInfo.getPos() + "%");
+            if (mService.getAppInfo() != null) {
+                Log.e(TAG, "change更新ui:" + mService.getAppInfo().toString());
+                mDownloadInfo.setStatus(DownloadService.DOWN_LOADING);
+                mService.isDownloading = true;
+                mService.downloadAPP(mService.getAppInfo());
             }
-        } catch (DbException e) {
-            e.printStackTrace();
         }
     }
 
@@ -240,6 +288,7 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
                     Message msg = Message.obtain();
                     msg.what = 1;
                     handler.sendEmptyMessage(1);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -260,6 +309,70 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.back:
                 this.finish();
+                break;
+            //下载按钮
+            case R.id.tv_progress:
+                if (mDownloadInfo == null) {
+                    int num = mService.getDownWaitting();
+                    if (num == 4) {
+                        Toast.makeText(AppDetailsActvity.this, "已有5个应用在下载队列,请等待", Toast.LENGTH_SHORT).show();
+                    } else {
+                        mDownloadInfo = DataUtils.convertAppInfoToDownloadInfo(appinfo, DownloadService.DOWN_UNLOAD);
+                        if (mService.isAPPLoading()) {
+                            try {
+                                mDownloadInfo.setStatus(DownloadService.DOWN_WAITTING);
+                                mService.mWaittingInfos.add(mDownloadInfo);
+                                mService.mAppInfos.add(appinfo);
+                                mApp.dbHelper.saveOrUpdate(mDownloadInfo);
+                                mTvDownload.setText("等待下载..");
+                            } catch (DbException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            mDownloadInfo.setStatus(DownloadService.DOWN_LOADING);
+                            mService.setDownLoadInfo(mDownloadInfo);
+                            mService.setAppInfo(appinfo);
+                            mService.isDownloading = true;
+                            mService.downloadAPP(appinfo);
+                        }
+                    }
+                } else {
+                    Log.e(TAG, "onClick: downstatus before click====" + mDownloadInfo.getStatus());
+                    switch (mDownloadInfo.getStatus()) {
+                        //APP未被下载
+                        case DownloadService.DOWN_UNLOAD:
+                            mDownloadInfo.setStatus(DownloadService.DOWN_LOADING);
+                            mService.setDownLoadInfo(mDownloadInfo);
+                            mService.setAppInfo(appinfo);
+                            mService.isDownloading = true;
+                            mService.downloadAPP(appinfo);
+                            break;
+                        //APP正在下载
+                        case DownloadService.DOWN_LOADING:
+                            mDownloadInfo.setStatus(DownloadService.DOWN_PAUSE);
+                            mService.setDownLoadInfo(mDownloadInfo);
+                            mService.isDownloading = false;
+                            mService.downloadAPP(appinfo);
+                            break;
+                        //APP等待下载
+                        case DownloadService.DOWN_WAITTING:
+                            Toast.makeText(AppDetailsActvity.this, "等待下载", Toast.LENGTH_SHORT).show();
+                            break;
+                        //APP暂停下载
+                        case DownloadService.DOWN_PAUSE:
+                            mDownloadInfo.setStatus(DownloadService.DOWN_LOADING);
+                            mService.setDownLoadInfo(mDownloadInfo);
+                            mService.isDownloading = true;
+                            mService.downloadAPP(appinfo);
+                            break;
+                        //APP下载完成
+                        case DownloadService.DOWN_FINISHED:
+                            mService.isDownloading = false;
+                            Toast.makeText(AppDetailsActvity.this, "APP已下载完成", Toast.LENGTH_SHORT).show();
+                            mTvDownload.setText("下载完成");
+                            break;
+                    }
+                }
                 break;
             case R.id.detals_down:      //展开显示listView
                 if (Ivdown.getTag().equals("off")) {
@@ -283,57 +396,8 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
                     Ivdown1.setTag("off");
                 }
                 break;
-
             case R.id.details_collect:
                 Toast.makeText(this, "收藏成功！", Toast.LENGTH_LONG).show();
-                break;
-            //下载按钮
-            case R.id.tv_progress:
-                if (mDownloadInfo == null){
-                    int num = mService.getDownWaitting();
-                    if (num == 4) {
-                        Toast.makeText(AppDetailsActvity.this, "已有5个应用在下载队列,请等待", Toast.LENGTH_SHORT).show();
-                    }else{
-                        mTvDownload.setText("下载");
-                        mDownloadInfo = DataUtils.convertAppInfoToDownloadInfo(appinfo,DownloadService.DOWN_LOADING);
-                        mDownloadInfo.setStatus(DownloadService.DOWN_LOADING);
-                        mService.setDownLoadInfo(mDownloadInfo);
-                        mService.mDownLoadInfos.add(mDownloadInfo);
-                        mService.downloadAPP(appinfo);
-                        try {
-                            mApp.dbHelper.save(mDownloadInfo);
-                        } catch (DbException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }else{
-                    switch (mDownloadInfo.getStatus()){
-                        //APP未被下载
-                        case DownloadService.DOWN_UNLOAD:
-                            mDownloadInfo.setStatus(DownloadService.DOWN_LOADING);
-                            mService.downloadAPP(appinfo);
-                            break;
-                        //APP正在下载
-                        case DownloadService.DOWN_LOADING:
-                            mDownloadInfo.setStatus(DownloadService.DOWN_PAUSE);
-                            mService.downloadAPP(appinfo);
-                            break;
-                        //APP等待下载
-                        case DownloadService.DOWN_WAITTING:
-                            Toast.makeText(AppDetailsActvity.this, "等待下载", Toast.LENGTH_SHORT).show();
-                            break;
-                        //APP暂停下载
-                        case DownloadService.DOWN_PAUSE:
-                            mDownloadInfo.setStatus(DownloadService.DOWN_LOADING);
-                            mService.downloadAPP(appinfo);
-                            break;
-                        //APP下载完成
-                        case DownloadService.DOWN_FINISHED:
-                            Toast.makeText(AppDetailsActvity.this, "APP已下载完成", Toast.LENGTH_SHORT).show();
-                            mTvDownload.setText("下载完成");
-                            break;
-                    }
-                }
                 break;
             case R.id.details_share:
                 Toast.makeText(this, "分享成功！", Toast.LENGTH_LONG).show();

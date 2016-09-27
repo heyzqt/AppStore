@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.appstore.R;
 import com.appstore.entity.AppInfo;
+import com.appstore.entity.DownLoadInfo;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.http.HttpHandler;
 
@@ -62,6 +63,12 @@ public class CollectActivity extends BaseActivity implements View.OnClickListene
 
     private AppInfo mAppInfo;
 
+    private MyRunnable runnable = null;
+
+    private Thread mThread = null;
+
+    private int count = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,88 +96,77 @@ public class CollectActivity extends BaseActivity implements View.OnClickListene
 
 
         Bundle bundle = getIntent().getExtras();
-        if(bundle!=null){
+        if (bundle != null) {
             mAppInfo = (AppInfo) bundle.getSerializable("appinfo");
-            Log.i(TAG, "initView: "+mAppInfo.toString());
+            Log.i(TAG, "initView: " + mAppInfo.toString());
         }
         //httpUtils = new HttpUtils();
     }
 
     @Override
     public void publish(int progress) {
-        Log.i(TAG, "publish: progress==="+progress);
+        Log.i(TAG, "publish: progress===" + progress);
     }
 
     @Override
-    public void change(AppInfo appInfo) {
-        Log.i(TAG, "change: appInfo==="+appInfo);
+    public void change(DownLoadInfo appInfo) {
+        Log.i(TAG, "change: appInfo===" + appInfo);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        bindDownloadService();
-        if(mService==null){
-            Log.i(TAG, "onResume: mService==null");
-        }else{
-            Log.i(TAG, "onResume: mService不为null");
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unbindDownloadService();
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        bindDownloadService();
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        unbindDownloadService();
+//    }
 
     @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
             case R.id.button_down:
-                if(mService==null){
-                    Log.i(TAG, "onclick: service null");
+                if(isDownloading){
+                    isDownloading = false;
                 }else{
-                    Log.i(TAG, "onclick: service 不为 null");
-                    mService.downloadAPP(mAppInfo);
+                    isDownloading = true;
                 }
-
-//                if (isDownloading) {
-//                    isDownloading = false;
-//                    mDownBtn.setText("开始");
-//                } else {
-//                    isDownloading = true;
-//                    mDownBtn.setText("暂停");
-//                }
-//                final File file = new File(path, "hehe.apk");
-//                int i = 0;
-//                if (file.exists()) {
-//                    final long filesize = file.length();
-//                    Log.i(TAG, "已有文件大小为:" + filesize);
-//                    if (filesize > 0) {
-//                        Log.i(TAG, "文件续传");
-//                        downloadAPP(url_second + filesize, filesize, path + "hehe.apk");
-//                    } else {
-//                        Log.i(TAG, "文件大小为0");
-//                        downloadAPP(url_second, 0, path + "hehe.apk");
-//                    }
-//                } else {
-//                    try {
-//                        Log.i(TAG, "文件不存在，下载");
-//                        file.createNewFile();
-//                        downloadAPP(url_second, 0, path + "hehe.apk");
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
+                final File file = new File(path, "hehe.apk");
+                int i = 0;
+                if (file.exists()) {
+                    final long filesize = file.length();
+                    Log.i(TAG, "已有文件大小为:" + filesize);
+                    if (filesize > 0) {
+                        Log.i(TAG, "文件续传");
+                        downloadAPP(url_second + filesize, filesize, path + "hehe.apk");
+                    } else {
+                        Log.i(TAG, "文件大小为0");
+                        downloadAPP(url_second, 0, path + "hehe.apk");
+                    }
+                } else {
+                    try {
+                        Log.i(TAG, "文件不存在，下载");
+                        file.createNewFile();
+                        downloadAPP(url_second, 0, path + "hehe.apk");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 break;
-       }
+        }
     }
 
     private void downloadAPP(final String url, final long pos, final String savePathAndFile) {
 
-        MyRunnable runnable = new MyRunnable("zqt", url, pos, savePathAndFile);
-        new Thread(runnable).start();
+        Log.i(TAG, "downloadAPP: ");
+        runnable = new MyRunnable("zqt", url, pos, savePathAndFile);
+        mThread = new Thread(runnable);
+        mThread.start();
+
     }
 
     class MyRunnable implements Runnable {
@@ -214,7 +210,7 @@ public class CollectActivity extends BaseActivity implements View.OnClickListene
                     bundle.putLong("total", contentLength);
                     msg.what = 1;
                     msg.setData(bundle);
-                    mHandler.sendMessageDelayed(msg,200);
+                    mHandler.sendMessageDelayed(msg, 200);
                 }
                 conn.disconnect();
                 Log.i(TAG, "downloadAPP: 下载完成");

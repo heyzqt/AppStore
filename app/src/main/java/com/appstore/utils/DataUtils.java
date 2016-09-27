@@ -18,6 +18,7 @@ public class DataUtils {
     public static DownLoadInfo convertAppInfoToDownloadInfo(AppInfo appInfo,int status){
         DownLoadInfo downLoadInfo = new DownLoadInfo();
         downLoadInfo.setAppId(appInfo.getId()+"");
+        downLoadInfo.setPackagename(appInfo.getPackageName());
         downLoadInfo.setStatus(status);
         return downLoadInfo;
     }
