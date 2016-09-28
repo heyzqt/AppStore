@@ -39,7 +39,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             //更新下载状态
             mDownloadUpdateListener.onChange(mService.getDownLoadInfo());
         }
-
         @Override
         public void onServiceDisconnected(ComponentName name) {
             mService=null;

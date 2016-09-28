@@ -153,7 +153,6 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
         } catch (DbException e) {
             e.printStackTrace();
         }
-
         Log.e(TAG, "oncreate");
     }
 
@@ -174,13 +173,12 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
         } catch (DbException e) {
             e.printStackTrace();
         }
-        //unbindDownloadService();
+           unbindDownloadService();
         Log.e(TAG, "onPause: ");
     }
 
     @Override
     public void publish(int progress) {
-
         if (mDownloadInfo != null && mDownloadInfo == mService.mDownLoadInfo) {
             Log.i(TAG, "publish: progress=" + progress);
             mProgressbar.setProgress(progress);
