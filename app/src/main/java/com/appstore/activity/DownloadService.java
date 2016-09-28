@@ -26,7 +26,6 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,11 +45,11 @@ public class DownloadService extends Service {
      * 当前正在下载的对象
      */
     public DownLoadInfo mDownLoadInfo;
-
-    /**
-     * 当前下载的进度
-     */
-    private int mCurrentPos;
+//
+//    /**
+//     * 当前下载的进度
+//     */
+//    private int mCurrentPos;
 
     /**
      * 当前下载APP对象
@@ -77,25 +76,21 @@ public class DownloadService extends Service {
      */
     private String mPath;
 
-    private static final String TAG = "hello";
-
     /**
      * APP下载线程池
      */
     private ExecutorService mExecutor = Executors.newSingleThreadExecutor();
 
     /**
-     * APP下载排队线程池
+     * APP下载状态更新
      */
-    //private ExecutorService mUpdateExecutor = Executors.newSingleThreadExecutor();
+    private ExecutorService mUpdateExec = Executors.newSingleThreadExecutor();
 
     private MyRunnable mRunnable = null;
 
     private StoreApplication mStoreAPP;
 
-    private Handler updateHandler = new Handler();
-
-    private Timer timer = null;
+    private static final String TAG = "hello";
 
     public static final int DOWN_UNLOAD = 0x0;      //未下载
     public static final int DOWN_LOADING = 0x2;     //正在下载
@@ -125,6 +120,7 @@ public class DownloadService extends Service {
         super.onCreate();
         mStoreAPP = (StoreApplication) getApplication();
         mPath = Environment.getExternalStorageDirectory().getPath() + "/AppStore/";
+        mUpdateExec.execute(updateStatusRunnable);
 //        //获取当前下载列表
 //        try {
 //            mDownLoadInfos = DBHelper.getInstance(mStoreAPP).findAll(DownLoadInfo.class);
@@ -182,38 +178,8 @@ public class DownloadService extends Service {
      * @param savePathAndFile
      */
     private void down(final String url, final long pos, final String savePathAndFile) {
-//        if (mRunnable != null && mDownLoadInfo.getStatus() == DOWN_FINISHED) {
-//            mExecutor.shutdown();
-//            Log.e(TAG, "down: status====" + mExecutor.isShutdown());
-//        }
-
         mRunnable = new MyRunnable(url, pos, savePathAndFile);
         mExecutor.execute(mRunnable);
-//
-//        switch (mDownLoadInfo.getStatus()) {
-//            case DOWN_UNLOAD:
-//                mDownLoadInfo.setStatus(DOWN_LOADING);
-//                mRunnable = new MyRunnable(url, pos, savePathAndFile);
-//                mExecutor.execute(mRunnable);
-//                break;
-//            case DOWN_LOADING:
-//                if (mRunnable == null) {
-//                    mRunnable = new MyRunnable(url, pos, savePathAndFile);
-//                } else {
-//                    mRunnable.setPos(pos);
-//                }
-//                mExecutor.execute(mRunnable);
-//                break;
-//            case DOWN_PAUSE:
-//                if (mRunnable == null) {
-//                    mRunnable = new MyRunnable(url, pos, savePathAndFile);
-//                }
-//                mExecutor.execute(mRunnable);
-//                break;
-//            default:
-//                break;
-//        }
-//        Log.e(TAG, "runnable====" + mRunnable.toString());
     }
 
     /**
@@ -237,8 +203,6 @@ public class DownloadService extends Service {
 
         @Override
         public void run() {
-
-            //if(mDownloadUpdateListener!=null&&mDownLoadInfo!=null&&isDownloading){}
 
             HttpURLConnection conn = null;
             try {
@@ -265,19 +229,34 @@ public class DownloadService extends Service {
                     mHandler.sendMessageDelayed(msg, 200);
                 }
                 conn.disconnect();
-                //mHandler.sendEmptyMessage(2);
             } catch (IOException e) {
-                conn.disconnect();
-                try {
-                    mDownLoadInfo.setStatus(DOWN_FINISHED);
-                    mStoreAPP.dbHelper.saveOrUpdate(mDownLoadInfo);
-                } catch (DbException e1) {
-                    e1.printStackTrace();
-                }
+                Log.e(TAG,"IOException!!!!!!");
                 e.printStackTrace();
+            } finally {
+                mHandler.sendEmptyMessage(2);
             }
         }
     }
+
+    // 创建Runnable线程，实时更新下载的进度条
+    Runnable updateStatusRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            while (true) {
+                if (mDownloadUpdateListener != null && mDownLoadInfo != null) {
+                    mDownloadUpdateListener.onPublish(mDownLoadInfo.getPos());
+                    //Log.i(TAG, "updateStatusRunnable线程  pos====" + mDownLoadInfo.getPos());
+                    //Log.e(TAG, "run: mDownloadUpdateListener==="+mDownloadUpdateListener.toString());
+                }
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    // TODO: handle exception
+                }
+            }
+        }
+    };
 
     Handler mHandler = new Handler() {
         @Override
@@ -292,23 +271,24 @@ public class DownloadService extends Service {
                     double d = Double.parseDouble(result);
                     int i = (int) (d * 100);
                     mDownLoadInfo.setPos(i);
+
+                    Log.e(TAG, "handleMessage: msg==1,pos==="+i);
+                    Log.e(TAG, "handleMessage: msg==1:"+mDownLoadInfo.getPackagename());
+                    if (i == 100) {
+                        mDownLoadInfo.setStatus(DOWN_FINISHED);
+                    }
+//                    if (mDownloadUpdateListener != null && mDownLoadInfo != null && isDownloading == true) {
+//                        mDownloadUpdateListener.onPublish(i);
+//                        Log.e(TAG, "handleMessage: "+mDownloadUpdateListener.toString());
+//                    }
+                    break;
+                case 2:
                     try {
-                        if (i == 100) {
-                            mDownLoadInfo.setStatus(DOWN_FINISHED);
-                            mStoreAPP.dbHelper.saveOrUpdate(mDownLoadInfo);
-                        }else{
-                            mDownLoadInfo.setPos(i);
-                        }
+                        Log.e(TAG, "handleMessage: msg===2,mDownLoadInfo===="+mDownLoadInfo.getPackagename() );
+                        mStoreAPP.dbHelper.saveOrUpdate(mDownLoadInfo);
                     } catch (DbException e) {
                         e.printStackTrace();
                     }
-
-                    if (mDownloadUpdateListener != null && mDownLoadInfo != null && isDownloading == true) {
-                        mDownloadUpdateListener.onPublish(i);
-                        Log.e(TAG, "handleMessage: "+mDownloadUpdateListener.toString());
-                    }
-                    break;
-                case 2:
                     //从等待队列中取出第一个APP来下载
                     if (mWaittingInfos != null && mWaittingInfos.size() > 0) {
                         DownLoadInfo waitInfo = mWaittingInfos.get(0);
@@ -368,14 +348,6 @@ public class DownloadService extends Service {
             e.printStackTrace();
         }
         return 0;
-    }
-
-    public int getCurrentPos() {
-        return mCurrentPos;
-    }
-
-    public void setCurrentPos(int currentPos) {
-        this.mCurrentPos = currentPos;
     }
 
     public AppInfo getAppInfo() {
