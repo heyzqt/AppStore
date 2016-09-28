@@ -146,8 +146,9 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         //设置透明度
         rollpager.setAnimationDurtion(500);
         //设置适配器
-        rollpager.setAdapter(new TestNormalAdapter(context));
+        //rollpager.setAdapter(new TestNormalAdapter(context));
 
+        new Thread(new A()).start();
         rollpager.setHintView(new ColorPointHintView(getActivity(), Color.YELLOW, Color.WHITE));
 
     }
@@ -168,6 +169,15 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
     }
 
 
+    private class A implements Runnable
+    {
+
+        @Override
+        public void run() {
+            rollpager.setAdapter(new TestNormalAdapter(context));
+
+        }
+    }
     private class TestNormalAdapter extends StaticPagerAdapter {
 
         public Context t_context;
