@@ -169,15 +169,18 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
     }
 
 
-    private class A implements Runnable
-    {
+    private class A implements Runnable {
 
         @Override
         public void run() {
-            rollpager.setAdapter(new TestNormalAdapter(context));
-
+            try {
+                rollpager.setAdapter(new TestNormalAdapter(context));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
+
     private class TestNormalAdapter extends StaticPagerAdapter {
 
         public Context t_context;

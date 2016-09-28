@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         scrollView = (ObServerScrollView) findViewById(R.id.horizontalScrollView_home);
         tag1 = ((TextView) findViewById(R.id.tvTag1));
         tag1.setOnClickListener(this);
+        tag1.setTextColor(getResources().getColor(R.color.color_main));
         tag2 = ((TextView) findViewById(R.id.tvTag2));
         tag2.setOnClickListener(this);
         tag3 = ((TextView) findViewById(R.id.tvTag3));
@@ -141,13 +142,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tag7 = ((TextView) findViewById(R.id.tvTag7));
         tag7.setOnClickListener(this);
 
-        tag1.setLayoutParams(new LinearLayout.LayoutParams(screenWidth/4,LinearLayout.LayoutParams.WRAP_CONTENT));
-        tag2.setLayoutParams(new LinearLayout.LayoutParams(screenWidth/4,LinearLayout.LayoutParams.WRAP_CONTENT));
-        tag3.setLayoutParams(new LinearLayout.LayoutParams(screenWidth/4,LinearLayout.LayoutParams.WRAP_CONTENT));
-        tag4.setLayoutParams(new LinearLayout.LayoutParams(screenWidth/4,LinearLayout.LayoutParams.WRAP_CONTENT));
-        tag5.setLayoutParams(new LinearLayout.LayoutParams(screenWidth/4,LinearLayout.LayoutParams.WRAP_CONTENT));
-        tag6.setLayoutParams(new LinearLayout.LayoutParams(screenWidth/4,LinearLayout.LayoutParams.WRAP_CONTENT));
-        tag7.setLayoutParams(new LinearLayout.LayoutParams(screenWidth/4,LinearLayout.LayoutParams.WRAP_CONTENT));
+        tag1.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 4, LinearLayout.LayoutParams.WRAP_CONTENT));
+        tag2.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 4, LinearLayout.LayoutParams.WRAP_CONTENT));
+        tag3.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 4, LinearLayout.LayoutParams.WRAP_CONTENT));
+        tag4.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 4, LinearLayout.LayoutParams.WRAP_CONTENT));
+        tag5.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 4, LinearLayout.LayoutParams.WRAP_CONTENT));
+        tag6.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 4, LinearLayout.LayoutParams.WRAP_CONTENT));
+        tag7.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 4, LinearLayout.LayoutParams.WRAP_CONTENT));
         list = new ArrayList<String>();
         for (int i = 0; i < str.length; i++) {
             list.add(str[i]);
@@ -166,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     class MyOnPageChangeListener implements ViewPager.OnPageChangeListener {
         @Override
         public void onPageSelected(int arg0) {
+            clearTitle(arg0);
             position = arg0;
             int x = arg0 - oldPosition;
             currentX = oldX + x * (screenWidth / 4);
@@ -222,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public void onAnimationStart(Animation animation) {
                         }
+
                         @Override
                         public void onAnimationEnd(Animation animation) {
                             scrollView.post(new Runnable() {
@@ -232,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 }
                             });
                         }
+
                         @Override
                         public void onAnimationRepeat(Animation animation) {
 
@@ -276,6 +280,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 R.layout.head_layout, null);
         return headerView;
     }
+
     @Override
     public void onBackPressed() {
         if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -284,4 +289,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             super.onBackPressed();
         }
     }
+
+    void clearTitle(int position) {
+        tag1.setTextColor(getResources().getColor(R.color.color_black));
+        tag2.setTextColor(getResources().getColor(R.color.color_black));
+        tag3.setTextColor(getResources().getColor(R.color.color_black));
+        tag4.setTextColor(getResources().getColor(R.color.color_black));
+        tag5.setTextColor(getResources().getColor(R.color.color_black));
+        tag6.setTextColor(getResources().getColor(R.color.color_black));
+        tag7.setTextColor(getResources().getColor(R.color.color_black));
+        switch (position) {
+            case 0:
+                tag1.setTextColor(getResources().getColor(R.color.color_main));
+                break;
+            case 1:
+                tag2.setTextColor(getResources().getColor(R.color.color_main));
+                break;
+            case 2:
+                tag3.setTextColor(getResources().getColor(R.color.color_main));
+                break;
+            case 3:
+                tag4.setTextColor(getResources().getColor(R.color.color_main));
+                break;
+            case 4:
+                tag5.setTextColor(getResources().getColor(R.color.color_main));
+                break;
+            case 5:
+                tag6.setTextColor(getResources().getColor(R.color.color_main));
+                break;
+            case 6:
+                tag7.setTextColor(getResources().getColor(R.color.color_main));
+                break;
+        }
+
+    }
+
 }
