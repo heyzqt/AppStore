@@ -41,7 +41,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             mDownloadUpdateListener.onChange(mService.getDownLoadInfo());
             Log.e("hello", "onServiceConnected: "+mDownloadUpdateListener.toString());
         }
-
         @Override
         public void onServiceDisconnected(ComponentName name) {
             mService=null;
