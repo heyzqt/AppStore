@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.appstore.StoreApplication;
 import com.appstore.entity.DownLoadInfo;
@@ -38,6 +39,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             mService.setDownloadUpdateListener(mDownloadUpdateListener);
             //更新下载状态
             mDownloadUpdateListener.onChange(mService.getDownLoadInfo());
+            Log.e("hello", "onServiceConnected: "+mDownloadUpdateListener.toString());
         }
 
         @Override
@@ -70,7 +72,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ActivityCollector.removeActivity(this);
+        //ActivityCollector.removeActivity(this);
     }
 
     private DownloadService.DownloadUpdateListener mDownloadUpdateListener = new DownloadService.DownloadUpdateListener() {

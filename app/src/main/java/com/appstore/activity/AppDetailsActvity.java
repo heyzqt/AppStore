@@ -120,7 +120,7 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
         Btcollect.setOnClickListener(this);
         Btshare.setOnClickListener(this);
 
-        Log.e(TAG, "initView: update update download UI");
+        //Log.e(TAG, "initView: update update download UI");
 
         //更新下载UI
         String packagename = getIntent().getStringExtra("comname");
@@ -154,14 +154,14 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
             e.printStackTrace();
         }
 
-        Log.e(TAG, "oncreate");
+       // Log.e(TAG, "oncreate");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         bindDownloadService();
-        Log.e(TAG, "onResume: ");
+        //Log.e(TAG, "onResume: ");
     }
 
     @Override
@@ -174,14 +174,22 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
         } catch (DbException e) {
             e.printStackTrace();
         }
-        //unbindDownloadService();
-        Log.e(TAG, "onPause: ");
+        unbindDownloadService();
+        //Log.e(TAG, "onPause: ");
     }
 
     @Override
     public void publish(int progress) {
 
-        if (mDownloadInfo != null && mDownloadInfo == mService.mDownLoadInfo) {
+        if(mDownloadInfo!=null){
+            Log.i(TAG, "publish: mdownloadInfo==="+mDownloadInfo.getAppId());
+        }
+
+        if(mService.mDownLoadInfo!=null){
+            Log.i(TAG, "publish: service mdownloadInfo==="+mService.mDownLoadInfo.getAppId());
+        }
+
+        if (mDownloadInfo != null && mDownloadInfo.getAppId().equals(mService.mDownLoadInfo.getAppId())) {
             Log.i(TAG, "publish: progress=" + progress);
             mProgressbar.setProgress(progress);
             mCurrentPos = progress;
@@ -243,6 +251,7 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
                 mDownloadInfo.setStatus(DownloadService.DOWN_LOADING);
                 mService.isDownloading = true;
                 mService.downloadAPP(mService.getAppInfo());
+                Log.e(TAG, "change: "+mService.mDownloadUpdateListener.toString());
             }
         }
     }
@@ -337,7 +346,6 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
                         }
                     }
                 } else {
-                    Log.e(TAG, "onClick: downstatus before click====" + mDownloadInfo.getStatus());
                     switch (mDownloadInfo.getStatus()) {
                         //APP未被下载
                         case DownloadService.DOWN_UNLOAD:

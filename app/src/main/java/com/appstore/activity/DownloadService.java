@@ -26,6 +26,7 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -93,6 +94,8 @@ public class DownloadService extends Service {
     private StoreApplication mStoreAPP;
 
     private Handler updateHandler = new Handler();
+
+    private Timer timer = null;
 
     public static final int DOWN_UNLOAD = 0x0;      //未下载
     public static final int DOWN_LOADING = 0x2;     //正在下载
@@ -262,7 +265,7 @@ public class DownloadService extends Service {
                     mHandler.sendMessageDelayed(msg, 200);
                 }
                 conn.disconnect();
-                mHandler.sendEmptyMessage(2);
+                //mHandler.sendEmptyMessage(2);
             } catch (IOException e) {
                 conn.disconnect();
                 try {
@@ -300,10 +303,10 @@ public class DownloadService extends Service {
                         e.printStackTrace();
                     }
 
-//                    if (mDownloadUpdateListener != null && mDownLoadInfo != null && isDownloading == true) {
-//
-//                    }
-                    mDownloadUpdateListener.onPublish(i);
+                    if (mDownloadUpdateListener != null && mDownLoadInfo != null && isDownloading == true) {
+                        mDownloadUpdateListener.onPublish(i);
+                        Log.e(TAG, "handleMessage: "+mDownloadUpdateListener.toString());
+                    }
                     break;
                 case 2:
                     //从等待队列中取出第一个APP来下载
