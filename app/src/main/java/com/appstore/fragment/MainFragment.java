@@ -11,6 +11,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -151,7 +152,8 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         //设置透明度
         rollpager.setAnimationDurtion(500);
         //设置适配器
-        rollpager.setAdapter(new TestNormalAdapter(context));
+        new Thread(new A()).start();
+        //rollpager.setAdapter(new TestNormalAdapter(context));
 
         rollpager.setHintView(new ColorPointHintView(getActivity(),Color.YELLOW,Color.WHITE));
 
@@ -172,6 +174,14 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         new Thread(new loadHttpData()).start();
     }
 
+    private class A implements  Runnable
+    {
+
+        @Override
+        public void run() {
+            rollpager.setAdapter(new TestNormalAdapter(context));
+        }
+    }
 
     private class TestNormalAdapter extends StaticPagerAdapter
     {
@@ -191,8 +201,10 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
             for(int i=0;i<listurl.size();i++)
             {
 
+
                 bit[i]=mImageLoader.loadImageSync("http://localhost:8090/image?name="+listurl.get(i).get("pagerimageurl"),loader.getOption());
 
+                Log.i("127","bit:"+bit[i].toString());
             }
         }
 
