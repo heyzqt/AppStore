@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appstore.R;
-import com.appstore.widget.MyFlowLayout;
+import com.appstore.widget.FlowLayout;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -81,7 +81,7 @@ public class RankFragment extends Fragment {
                     int padding = (int) (getActivity().getResources().getDisplayMetrics().density * 10 + 0.5f);
                     int padding1 = (int) (getActivity().getResources().getDisplayMetrics().density * 5 + 0.5f);
                     scrollView.setPadding(padding, padding, padding, padding);
-                    MyFlowLayout flowLayout = new MyFlowLayout(getActivity());
+                    FlowLayout flowLayout = new FlowLayout(getActivity());
                     Random random = new Random();
                     try {
                         jsonArray = new JSONArray(str);

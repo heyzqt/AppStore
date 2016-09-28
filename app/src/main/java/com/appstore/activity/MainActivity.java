@@ -1,12 +1,15 @@
 package com.appstore.activity;
 
-import android.content.Intent;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +22,6 @@ import android.widget.TextView;
 
 import com.appstore.R;
 import com.appstore.adapter.MyPagerAdapter;
-import com.appstore.utils.PopupWindowUtils;
 import com.appstore.widget.ObServerScrollView;
 import com.appstore.widget.ScrollViewListener;
 
@@ -51,13 +53,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tag6;
     private TextView tag7;
     private int screenWidth;
-    private ImageView Ivmenu;
     View view;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private Toolbar toolbar;
+    private NavigationView navigationView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.addHeaderView(headerView());
+        actionBarDrawerToggle = new ActionBarDrawerToggle(MainActivity.this, drawerLayout, toolbar, R.string.app_name, R.string.app_name);
+        drawerLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                actionBarDrawerToggle.syncState();
+            }
+        });
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         mAdapter = new MyPagerAdapter(fragmentManager);
         mPager = (ViewPager) findViewById(R.id.pager);
@@ -67,11 +86,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         WindowManager windowManager = getWindowManager();
         Display display = windowManager.getDefaultDisplay();
         screenWidth = display.getWidth();
-        Ivmenu= (ImageView) findViewById(R.id.slide_menu);
-        Ivmenu.setOnClickListener(this);
-        Ivmenu.setTag("on");
         init();
-        initCursor(6);
+        initCursor(4);
     }
 
     @Override
@@ -103,10 +119,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.tvTag7:
                 mPager.setCurrentItem(6);
-                break;
-            case R.id.slide_menu:
-              //  initView2();
-                startActivity(new Intent(this,CollectActivity.class));
                 break;
         }
     }
@@ -258,20 +270,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         oldX = offset;
     }
 
-    public void initView2() {
-        // 找到设置好的layout
-        view = LayoutInflater.from(MainActivity.this).inflate(R.layout.popup,
-                null);
-        // TODO Auto-generated method stub
-        int screenWidth = MainActivity.this.getWindowManager()
-                .getDefaultDisplay().getWidth();
-        int screenHeigh = MainActivity.this.getWindowManager()
-                .getDefaultDisplay().getHeight();
-        View downView = (LinearLayout) view.findViewById(R.id.mLayout);
-        // 启动popupWindow；
-        PopupWindowUtils popu = new PopupWindowUtils(MainActivity.this,
-                screenWidth, screenHeigh - 130, downView, view);
-       // center = (TextView) view.findViewById(R.id.center);// 个人中心
+    private View headerView() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View headerView = inflater.inflate(
+                R.layout.head_layout, null);
+        return headerView;
     }
-
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

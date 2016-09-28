@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/color_white"
     android:orientation="vertical">
 
@@ -9,7 +10,7 @@
         android:id="@+id/deatils_01"
         android:layout_width="fill_parent"
         android:layout_height="54dp"
-        android:background="@color/color_bg">
+        android:background="@color/color_line">
 
         <ImageView
             android:id="@+id/back"
@@ -299,18 +300,31 @@
             android:textColor="@color/color_white"
             android:textSize="18dp"></Button>
 
-        <Button
-            android:id="@+id/details_download"
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
             android:layout_toLeftOf="@+id/details_share"
             android:layout_toRightOf="@+id/details_collect"
-            android:background="@color/color_main"
-            android:text="下载"
-            android:textColor="@color/color_white"
-            android:textSize="18sp" />
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp">
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/color_626262"
+                android:progressDrawable="@drawable/style_progressbar"/>
+
+            <TextView
+                android:id="@+id/tv_progress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:text="开始下载"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:textColor="@color/color_white"/>
+        </RelativeLayout>
 
         <Button
             android:id="@+id/details_share"

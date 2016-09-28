@@ -1,11 +1,11 @@
 package com.appstore.entity;
 
-import java.util.Arrays;
+import java.io.Serializable;
 
 /**
  * Created by 张艳琴 on 2016/9/19.
  */
-public class AppInfo {
+public class AppInfo implements Serializable {
 
     private int id;
     private String name;

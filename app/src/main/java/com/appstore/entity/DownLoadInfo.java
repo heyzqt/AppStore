@@ -1,5 +1,7 @@
 package com.appstore.entity;
 
+import com.appstore.activity.DownloadService;
+
 /**
  * Created by heyzqt on 2016/9/25.
  */
@@ -7,9 +9,9 @@ public class DownLoadInfo {
 
     private int id;
     private String appId;
-    private String appname;
     private String packagename;
-    private String status;
+    private int pos;
+    private int status = DownloadService.DOWN_UNLOAD;
 
     public int getId() {
         return id;
@@ -35,12 +37,20 @@ public class DownLoadInfo {
         this.packagename = packagename;
     }
 
-    public String getAppname() {
-        return appname;
+    public int getStatus() {
+        return status;
     }
 
-    public void setAppname(String appname) {
-        this.appname = appname;
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getPos() {
+        return pos;
+    }
+
+    public void setPos(int pos) {
+        this.pos = pos;
     }
 
     @Override
@@ -48,9 +58,9 @@ public class DownLoadInfo {
         return "DownLoadInfo{" +
                 "id=" + id +
                 ", appId='" + appId + '\'' +
-                ", appname='" + appname + '\'' +
                 ", packagename='" + packagename + '\'' +
-                ", status='" + status + '\'' +
+                ", pos=" + pos +
+                ", status=" + status +
                 '}';
     }
 }

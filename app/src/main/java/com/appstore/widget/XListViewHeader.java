@@ -4,7 +4,7 @@
  * @author Maxwin
  * @description XListView's header
  */
-package com.appstore.fragment;
+package com.appstore.widget;
 
 
 import android.content.Context;

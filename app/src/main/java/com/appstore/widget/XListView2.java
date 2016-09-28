@@ -6,7 +6,7 @@
  * @description An ListView support (a) Pull down to refresh, (b) Pull up to load more.
  * 		Implement IXListViewListener, and see stopRefresh() / stopLoadMore().
  */
-package com.appstore.fragment;
+package com.appstore.widget;
 
 
 import android.content.Context;
@@ -24,7 +24,8 @@ import android.widget.Scroller;
 import android.widget.TextView;
 
 import com.appstore.R;
-public class XListView extends ListView implements OnScrollListener {
+
+public class XListView2 extends ListView implements OnScrollListener {
 
 	private float mLastY = -1; // save event y
 	private Scroller mScroller; // used for scroll back
@@ -67,17 +68,17 @@ public class XListView extends ListView implements OnScrollListener {
 	/**
 	 * @param context
 	 */
-	public XListView(Context context) {
+	public XListView2(Context context) {
 		super(context);
 		initWithContext(context);
 	}
 
-	public XListView(Context context, AttributeSet attrs) {
+	public XListView2(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		initWithContext(context);
 	}
 
-	public XListView(Context context, AttributeSet attrs, int defStyle) {
+	public XListView2(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		initWithContext(context);
 	}
@@ -377,11 +378,11 @@ public class XListView extends ListView implements OnScrollListener {
 		public void onLoadMore();
 	}
 
-	@Override
-protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+	/*@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE>>2,MeasureSpec.AT_MOST);
 		super.onMeasure(widthMeasureSpec,expandSpec);
 
-	}
+	}*/
 
 }

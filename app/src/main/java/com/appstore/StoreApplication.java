@@ -1,7 +1,13 @@
 package com.appstore;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 
+import com.appstore.activity.DownloadService;
+import com.appstore.dbutils.DBHelper;
+import com.lidroid.xutils.DbUtils;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -23,11 +29,31 @@ public class StoreApplication extends Application {
 
     private final String IMAGE_CACHE_PATH="AppStore/Cache";
 
+    /**
+     * SharedPreferences对象
+     */
+    public SharedPreferences sp;
+
+    public SharedPreferences.Editor editor;
+
+    /**
+     * 数据库操作对象
+     */
+    public DbUtils dbHelper;
+
     @Override
     public void onCreate() {
         super.onCreate();
         IP_ADDRESS = getResources().getString(R.string.ip_address);
         initImageLoader();
+
+        sp = getSharedPreferences("AppStore", Context.MODE_PRIVATE);
+        editor = sp.edit();
+
+        dbHelper = DBHelper.getInstance(this);
+
+        //启动服务
+        startService(new Intent(this, DownloadService.class));
     };
 
     private void initImageLoader() {

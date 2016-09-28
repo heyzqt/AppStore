@@ -1,151 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context=".activity.MainActivity">
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="54dp"
-        android:background="@color/color_bg">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/color_line">
 
         <ImageView
-            android:id="@+id/slide_menu"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_setting" />
-
-        <ImageView
-            android:id="@+id/id_launcher"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/slide_menu"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginRight="15dp"
             android:src="@mipmap/ic_launcher1" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/id_launcher"
-            android:text="应用市场"
-            android:textColor="@color/color_black"
+            android:text="应用商店"
+            android:textColor="#000"
             android:textSize="18dp" />
-    </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:fitsSystemWindows="true">
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <com.appstore.widget.ObServerScrollView
-            android:id="@+id/horizontalScrollView_home"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fillViewport="true"
-            android:scrollbars="none">
+            android:orientation="vertical">
 
             <RelativeLayout
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:id="@+id/linear"
-                    android:layout_width="fill_parent"
-                    android:layout_height="40dp"
-                    android:background="@color/color_white"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                <com.appstore.widget.ObServerScrollView
+                    android:id="@+id/horizontalScrollView_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fillViewport="true"
+                    android:scrollbars="none">
 
-                    <TextView
-                        android:id="@+id/tvTag1"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="首页"
-                        android:textColor="#ff000000"
-                        android:textSize="16sp" />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/tvTag2"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="应用"
-                        android:textColor="#ff000000"
-                        android:textSize="16sp" />
+                        <LinearLayout
+                            android:id="@+id/linear"
+                            android:layout_width="fill_parent"
+                            android:layout_height="40dp"
+                            android:background="@color/color_white"
+                            android:gravity="center"
+                            android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/tvTag3"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="游戏"
-                        android:textColor="#ff000000"
-                        android:textSize="16sp" />
+                            <TextView
+                                android:id="@+id/tvTag1"
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="首页"
+                                android:textColor="#ff000000"
+                                android:textSize="16sp" />
 
-                    <TextView
-                        android:id="@+id/tvTag4"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="专题"
-                        android:textColor="#ff000000"
-                        android:textSize="16sp" />
+                            <TextView
+                                android:id="@+id/tvTag2"
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="应用"
+                                android:textColor="#ff000000"
+                                android:textSize="16sp" />
 
-                    <TextView
-                        android:id="@+id/tvTag5"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="推荐"
-                        android:textColor="#ff000000"
-                        android:textSize="16sp" />
+                            <TextView
+                                android:id="@+id/tvTag3"
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="游戏"
+                                android:textColor="#ff000000"
+                                android:textSize="16sp" />
 
-                    <TextView
-                        android:id="@+id/tvTag6"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="分类"
-                        android:textColor="#ff000000"
-                        android:textSize="16sp" />
+                            <TextView
+                                android:id="@+id/tvTag4"
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="专题"
+                                android:textColor="#ff000000"
+                                android:textSize="16sp" />
 
-                    <TextView
-                        android:id="@+id/tvTag7"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="排行"
-                        android:textColor="#ff000000"
-                        android:textSize="16sp" />
-                </LinearLayout>
+                            <TextView
+                                android:id="@+id/tvTag5"
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="推荐"
+                                android:textColor="#ff000000"
+                                android:textSize="16sp" />
 
-                <ImageView
-                    android:id="@+id/ivCursor"
-                    android:layout_width="100dp"
-                    android:layout_height="2dp"
-                    android:layout_below="@+id/linear"
-                    android:layout_weight="1"
-                    android:background="@color/color_main"
-                    android:scaleType="matrix" />
+                            <TextView
+                                android:id="@+id/tvTag6"
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="分类"
+                                android:textColor="#ff000000"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/tvTag7"
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="排行"
+                                android:textColor="#ff000000"
+                                android:textSize="16sp" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/ivCursor"
+                            android:layout_width="100dp"
+                            android:layout_height="2dp"
+                            android:layout_below="@+id/linear"
+                            android:layout_weight="1"
+                            android:background="@color/color_main"
+                            android:scaleType="matrix" />
+                    </RelativeLayout>
+                </com.appstore.widget.ObServerScrollView>
             </RelativeLayout>
-        </com.appstore.widget.ObServerScrollView>
-    </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#d1dade" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#d1dade" />
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v4.view.ViewPager>
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </android.support.v4.view.ViewPager>
+        </LinearLayout>
+            <android.support.design.widget.NavigationView
+                android:id="@+id/nav_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                app:menu="@menu/drawer" />
+    </android.support.v4.widget.DrawerLayout>
 </LinearLayout>

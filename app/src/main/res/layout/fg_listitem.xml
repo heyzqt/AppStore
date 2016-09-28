@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -82,12 +83,15 @@
                         android:layout_weight="0.3">
 
                         <RatingBar
+                            android:id="@+id/mfg_rb_ratingBar"
                             android:layout_width="wrap_content"
                             android:layout_height="15dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginTop="5dp"
-                            style="?android:attr/ratingBarStyleSmall"
-                            android:id="@+id/mfg_rb_ratingBar" />
+                            style="@style/fiveRatingBar"
+                            android:isIndicator="true"
+                            android:numStars="5"
+                            android:rating="4" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -166,4 +170,8 @@
             android:layout_weight="0.06"
             android:layout_height="match_parent"></LinearLayout>
     </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:background="@color/color_line"
+        android:layout_height="5dp"></View>
 </LinearLayout>

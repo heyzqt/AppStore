@@ -59,7 +59,8 @@ public class SafeAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.title.setText(safeList.get(position).getSafeDes());
-        holder.icon.setImageResource(R.mipmap.safedesurl0);
+        ImgUtils.setInterImg1(StoreApplication.IP_ADDRESS+"image?name="+safeList.get(position).getSafeDesUrl(),holder.icon,R.mipmap.safedesurl0);
+       // holder.icon.setImageResource(R.mipmap.safedesurl0);
         return convertView;
     }
 
