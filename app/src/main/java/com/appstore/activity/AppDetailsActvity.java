@@ -27,6 +27,7 @@ import com.appstore.entity.DownLoadInfo;
 import com.appstore.entity.Safe;
 import com.appstore.utils.DataUtils;
 import com.appstore.utils.ImgUtils;
+import com.appstore.utils.PackageUtils;
 import com.appstore.widget.NoScrollListView;
 import com.lidroid.xutils.db.sqlite.Selector;
 import com.lidroid.xutils.exception.DbException;
@@ -144,25 +145,14 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
                 } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_WAITTING) {
                     mTvDownload.setText("等待下载..");
                 } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_FINISHED) {
-                    mTvDownload.setText("点击下载");
-                    //mProgressbar.setBackgroundColor(getResources().getColor(R.color.color_main));
+                    mTvDownload.setText("点击安装");
                 } else if(mDownloadInfo.getStatus() == DownloadService.DOWN_INSTALL){
                     mTvDownload.setText("点击打开");
                 }
-
-
-                //        if (mDownloadInfo != null && mDownloadInfo.getStatus() == DownloadService.DOWN_LOADING) {
-//            mService.isDownloading = true;
-//            mProgressbar.setProgress(mDownloadInfo.getPos());
-//            mTvDownload.setText(mDownloadInfo.getPos() + "%");
-//            mService.downloadAPP(appinfo);
-//        }
             }
         } catch (DbException e) {
             e.printStackTrace();
         }
-
-       // Log.e(TAG, "oncreate");
     }
 
     @Override
@@ -222,7 +212,7 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
                     case DownloadService.DOWN_LOADING:
                         mTvDownload.setText(progress + "%");
                         if (progress == 100) {
-                            mTvDownload.setText("下载完成");
+                            mTvDownload.setText("点击安装");
                             mDownloadInfo.setStatus(DownloadService.DOWN_FINISHED);
                         }
                         break;
@@ -232,7 +222,7 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
                         break;
                     //APP下载完成
                     case DownloadService.DOWN_FINISHED:
-                        mTvDownload.setText("点击下载");
+                        mTvDownload.setText("点击安装");
                         break;
                     //APP已经安装
                     case DownloadService.DOWN_INSTALL:
@@ -253,6 +243,22 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
             Log.e(TAG, "change: mDownloadInfo==="+mDownloadInfo.toString());
         }
         Log.e(TAG, "change: ");
+        if (mDownloadInfo!=null&&mDownloadInfo.getStatus()==DownloadService.DOWN_FINISHED){
+            boolean isInstalled = PackageUtils.isAppInstalled(this,mDownloadInfo.getPackagename());
+            Log.e(TAG, "change: installed==="+isInstalled);
+            if(isInstalled){
+                mDownloadInfo.setStatus(DownloadService.DOWN_INSTALL);
+                mProgressbar.setProgress(100);
+                mTvDownload.setText("点击打开");
+                mService.isDownloading = false;
+                try {
+                    mApp.dbHelper.saveOrUpdate(mDownloadInfo);
+                } catch (DbException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         if (mDownloadInfo != null && mDownloadInfo.getStatus() == DownloadService.DOWN_LOADING) {
             if (mService.getAppInfo() != null) {
                 //Log.e(TAG, "change更新ui:" + mService.getAppInfo().toString());
@@ -397,6 +403,7 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
                         //APP成功安装
                         case DownloadService.DOWN_INSTALL:
                             mTvDownload.setText("点击打开");
+                            PackageUtils.startApp(this,mDownloadInfo.getPackagename());
                             break;
                     }
                 }

@@ -144,7 +144,7 @@
                             app:textSize="3dp" />
 
                         <TextView
-                            android:id="@+id/textView_down"
+                            android:id="@+id/tv_downpos"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/fg_img_download"
