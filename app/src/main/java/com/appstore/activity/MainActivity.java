@@ -1,13 +1,12 @@
 package com.appstore.activity;
 
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -22,12 +21,14 @@ import android.widget.TextView;
 
 import com.appstore.R;
 import com.appstore.adapter.MyPagerAdapter;
+import com.appstore.entity.DownLoadInfo;
+import com.appstore.fragment.MainFragment;
 import com.appstore.widget.ObServerScrollView;
 import com.appstore.widget.ScrollViewListener;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private MyPagerAdapter mAdapter;
     private ViewPager mPager;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Toolbar toolbar;
     private NavigationView navigationView;
 
+    private MainFragment mainFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         screenWidth = display.getWidth();
         init();
         initCursor(4);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //bindDownloadService();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //unbindDownloadService();
+    }
+
+    @Override
+    public void publish(int progress) {
+//        if(mPager.getCurrentItem()==0||mAdapter.getCurrentFrag(0)!=null){
+//            //更新当前下载的UI
+//            mainFragment = (MainFragment) mAdapter.getCurrentFrag(0);
+//            mainFragment.publishUI(progress);
+//        }
+    }
+
+    @Override
+    public void change(DownLoadInfo downLoadInfo) {
+
     }
 
     @Override

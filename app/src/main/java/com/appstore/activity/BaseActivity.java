@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.appstore.StoreApplication;
 import com.appstore.entity.DownLoadInfo;
@@ -19,8 +18,8 @@ import com.appstore.utils.ActivityCollector;
  */
 public abstract class BaseActivity extends AppCompatActivity {
 
-    protected StoreApplication mApp;
-    protected DownloadService mService;
+    public StoreApplication mApp;
+    public DownloadService mService;
     private boolean isBound = false;
 
     @Override
@@ -39,7 +38,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             mService.setDownloadUpdateListener(mDownloadUpdateListener);
             //更新下载状态
             mDownloadUpdateListener.onChange(mService.getDownLoadInfo());
-            Log.e("hello", "onServiceConnected: "+mDownloadUpdateListener.toString());
+            //Log.e("hello", "onServiceConnected: "+mDownloadUpdateListener.toString());
         }
         @Override
         public void onServiceDisconnected(ComponentName name) {

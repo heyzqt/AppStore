@@ -24,16 +24,25 @@ public class MyPagerAdapter extends FragmentStatePagerAdapter {
         super(fm);
     }
 
+    MainFragment mainFragment;
+
+    public Fragment getCurrentFrag(int position){
+        switch (position){
+            case 0:
+                return mainFragment;
+        }
+        return null;
+    }
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                Fragment fragment = new MainFragment();
+                mainFragment = new MainFragment();
                 Bundle args = new Bundle();
                 args.putString("arg", SUB_FRAGMENT[position]);
-                fragment.setArguments(args);
-                return fragment;
+                mainFragment.setArguments(args);
+                return mainFragment;
             case 1:
                 Fragment fragment1 = new AppsFragment();
                 Bundle args1 = new Bundle();

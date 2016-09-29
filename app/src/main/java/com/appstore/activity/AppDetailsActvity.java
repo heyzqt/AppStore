@@ -136,7 +136,7 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
                     mTvDownload.setText("继续下载");
                     mProgressbar.setProgress(mDownloadInfo.getPos());
                 } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_WAITTING) {
-                    mTvDownload.setText("等待下载");
+                    mTvDownload.setText("等待下载..");
                 } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_FINISHED) {
                     mTvDownload.setText("下载完成");
                     //mProgressbar.setBackgroundColor(getResources().getColor(R.color.color_main));
@@ -161,7 +161,6 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         bindDownloadService();
-        //Log.e(TAG, "onResume: ");
     }
 
     @Override
@@ -175,22 +174,21 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
             e.printStackTrace();
         }
         unbindDownloadService();
-        //Log.e(TAG, "onPause: ");
     }
 
     @Override
     public void publish(int progress) {
 
         if(mDownloadInfo!=null){
-            Log.i(TAG, "publish: mdownloadInfo==="+mDownloadInfo.getAppId());
+            //Log.i(TAG, "publish: mdownloadInfo==="+mDownloadInfo.getAppId());
         }
 
         if(mService.mDownLoadInfo!=null){
-            Log.i(TAG, "publish: service mdownloadInfo==="+mService.mDownLoadInfo.getAppId());
+            //Log.i(TAG, "publish: service mdownloadInfo==="+mService.mDownLoadInfo.getAppId());
         }
 
         if (mDownloadInfo != null && mDownloadInfo.getAppId().equals(mService.mDownLoadInfo.getAppId())) {
-            Log.i(TAG, "publish: progress=" + progress);
+            //Log.i(TAG, "publish: progress=" + progress);
             mProgressbar.setProgress(progress);
             mCurrentPos = progress;
             Message msg = Message.obtain();
@@ -235,19 +233,19 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void change(DownLoadInfo downLoadInfo) {
-//        Log.i(TAG, "change: ");
-//        if(downLoadInfo!=null){
-//            Log.e(TAG, "change: downLoadInfo==="+downLoadInfo.toString());
-//        }
-//        if(mDownloadInfo!=null){
-//            Log.e(TAG, "change: mDownloadInfo==="+mDownloadInfo.toString());
-//        }
+        Log.i(TAG, "change: ");
+        if(downLoadInfo!=null){
+            Log.e(TAG, "change: downLoadInfo==="+downLoadInfo.toString());
+        }
+        if(mDownloadInfo!=null){
+            Log.e(TAG, "change: mDownloadInfo==="+mDownloadInfo.toString());
+        }
         Log.e(TAG, "change: ");
         if (mDownloadInfo != null && mDownloadInfo.getStatus() == DownloadService.DOWN_LOADING) {
-            mProgressbar.setProgress(mDownloadInfo.getPos());
-            mTvDownload.setText(mDownloadInfo.getPos() + "%");
             if (mService.getAppInfo() != null) {
-                Log.e(TAG, "change更新ui:" + mService.getAppInfo().toString());
+                //Log.e(TAG, "change更新ui:" + mService.getAppInfo().toString());
+                mProgressbar.setProgress(mService.mDownLoadInfo.getPos());
+                mTvDownload.setText(mService.mDownLoadInfo.getPos() + "%");
                 mDownloadInfo.setStatus(DownloadService.DOWN_LOADING);
                 mService.isDownloading = true;
                 mService.downloadAPP(mService.getAppInfo());
