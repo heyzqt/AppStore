@@ -171,10 +171,6 @@ public class GameFragment extends Fragment implements AdapterView.OnItemClickLis
                 bundle.putString("Json",jsonArray.toString());
                 msg.setData(bundle);
                 handle.sendMessage(msg);
-
-
-
-
         }
     }
 
