@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.appstore.R;
 import com.appstore.adapter.MyPagerAdapter;
 import com.appstore.entity.DownLoadInfo;
+import com.appstore.fragment.MainFragment;
 import com.appstore.widget.ObServerScrollView;
 import com.appstore.widget.ScrollViewListener;
 
@@ -59,6 +60,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private Toolbar toolbar;
     private NavigationView navigationView;
 
+    private MainFragment mainFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +106,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void publish(int progress) {
-
+//        if(mPager.getCurrentItem()==0||mAdapter.getCurrentFrag(0)!=null){
+//            //更新当前下载的UI
+//            mainFragment = (MainFragment) mAdapter.getCurrentFrag(0);
+//            mainFragment.publishUI(progress);
+//        }
     }
 
     @Override

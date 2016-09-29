@@ -71,6 +71,7 @@ public class ListViewAdapter extends BaseAdapter implements View.OnClickListener
             holder.tv_appsize=(TextView) convertView.findViewById(R.id.mfg_tv_appsize);
             holder.tv_appintro=(TextView) convertView.findViewById(R.id.mfg_tv_intro);
             holder.rb_apprank=(RatingBar) convertView.findViewById(R.id.mfg_rb_ratingBar);
+            holder.mTvPos = (TextView) convertView.findViewById(R.id.tv_downpos);
 
             holder.img_download.setOnClickListener(this);
 

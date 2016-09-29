@@ -18,8 +18,8 @@ import com.appstore.utils.ActivityCollector;
  */
 public abstract class BaseActivity extends AppCompatActivity {
 
-    protected StoreApplication mApp;
-    protected DownloadService mService;
+    public StoreApplication mApp;
+    public DownloadService mService;
     private boolean isBound = false;
 
     @Override

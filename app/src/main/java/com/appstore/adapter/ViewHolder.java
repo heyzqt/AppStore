@@ -1,6 +1,5 @@
 package com.appstore.adapter;
 
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -15,4 +14,6 @@ public class ViewHolder {
     public  TextView tv_appintro;
     public ImageView img_appimg;
     public RatingBar rb_apprank;
+
+    public TextView mTvPos;
 }

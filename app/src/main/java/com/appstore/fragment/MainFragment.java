@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.appstore.R;
 import com.appstore.activity.AppDetailsActvity;
+import com.appstore.activity.MainActivity;
 import com.appstore.adapter.ImgLoaders;
 import com.appstore.adapter.ListViewAdapter;
 import com.appstore.widget.XListView;
@@ -107,6 +108,8 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         }
 
     };
+
+    private MainActivity mainActivity;
 
     @Nullable
     @Override
@@ -267,5 +270,37 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
         intent.putExtras(bundle);
         startActivity(intent);
     }
+
+    @Override
+    public void onAttach(Context context) {
+        // TODO Auto-generated method stub
+        super.onAttach(context);
+        mainActivity = (MainActivity) context;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mainActivity.bindDownloadService();
+    }
+
+    @Override
+    public void onPause() {
+        super.onResume();
+        mainActivity.unbindDownloadService();
+    }
+
+    //更新进度条UI
+//    public void publishUI(int progress){
+//        if (mDownloadInfo != null && mDownloadInfo.getAppId().equals(mService.mDownLoadInfo.getAppId())) {
+//            //Log.i(TAG, "publish: progress=" + progress);
+//            mProgressbar.setProgress(progress);
+//            mCurrentPos = progress;
+//            Message msg = Message.obtain();
+//            msg.what = UPDATE_INFO;
+//            msg.arg1 = progress;
+//            mHandler.sendMessageDelayed(msg, 200);
+//        }
+//    }
 
 }

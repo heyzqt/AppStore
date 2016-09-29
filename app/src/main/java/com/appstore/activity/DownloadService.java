@@ -226,7 +226,7 @@ public class DownloadService extends Service {
                     bundle.putLong("total", contentLength);
                     msg.what = 1;
                     msg.setData(bundle);
-                    mHandler.sendMessageDelayed(msg, 200);
+                    mHandler.sendMessage(msg);
                 }
                 conn.disconnect();
             } catch (IOException e) {
@@ -272,8 +272,8 @@ public class DownloadService extends Service {
                     int i = (int) (d * 100);
                     mDownLoadInfo.setPos(i);
 
-                    Log.e(TAG, "handleMessage: msg==1,pos==="+i);
-                    Log.e(TAG, "handleMessage: msg==1:"+mDownLoadInfo.getPackagename());
+                   //Log.e(TAG, "handleMessage: msg==1,pos==="+i);
+                    Log.e(TAG, "handleMessage: msg==1:"+mDownLoadInfo.getPackagename()+",current="+current+",pos==="+i);
                     if (i == 100) {
                         mDownLoadInfo.setStatus(DOWN_FINISHED);
                     }
@@ -284,23 +284,27 @@ public class DownloadService extends Service {
                     break;
                 case 2:
                     try {
-                        Log.e(TAG, "handleMessage: msg===2,mDownLoadInfo===="+mDownLoadInfo.getPackagename() );
-                        mStoreAPP.dbHelper.saveOrUpdate(mDownLoadInfo);
+                        if(mDownLoadInfo.getStatus()== DownloadService.DOWN_FINISHED){
+                           Log.e(TAG, "handleMessage: msg===2,mDownLoadInfo===="+mDownLoadInfo.getPackagename() );
+                            mStoreAPP.dbHelper.saveOrUpdate(mDownLoadInfo);
+                            //从等待队列中取出第一个APP来下载
+                            if (mWaittingInfos != null && mWaittingInfos.size() > 0) {
+                                DownLoadInfo waitInfo = mWaittingInfos.get(0);
+                                if (waitInfo != null) {
+                                    AppInfo appInfo = mAppInfos.get(0);
+                                    mWaittingInfos.remove(0);
+                                    mAppInfos.remove(0);
+                                    waitInfo.setStatus(DOWN_LOADING);
+                                    isDownloading = true;
+                                    mDownLoadInfo = waitInfo;
+                                    Log.e(TAG, "handleMessage: download before");
+                                    downloadAPP(appInfo);
+                                    Log.e(TAG, "handleMessage: download after");
+                                }
+                            }
+                        }
                     } catch (DbException e) {
                         e.printStackTrace();
-                    }
-                    //从等待队列中取出第一个APP来下载
-                    if (mWaittingInfos != null && mWaittingInfos.size() > 0) {
-                        DownLoadInfo waitInfo = mWaittingInfos.get(0);
-                        if (waitInfo != null) {
-                            AppInfo appInfo = mAppInfos.get(0);
-                            mWaittingInfos.remove(0);
-                            mAppInfos.remove(0);
-                            waitInfo.setStatus(DOWN_LOADING);
-                            isDownloading = true;
-                            mDownLoadInfo = waitInfo;
-                            downloadAPP(appInfo);
-                        }
                     }
                     break;
             }
