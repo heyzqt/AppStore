@@ -109,13 +109,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //        if(mPager.getCurrentItem()==0||mAdapter.getCurrentFrag(0)!=null){
 //            //更新当前下载的UI
 //            mainFragment = (MainFragment) mAdapter.getCurrentFrag(0);
-//            mainFragment.publishUI(progress);
+//            mainFragment.changeUI();
+//            //mainFragment.publishUI(progress);
 //        }
     }
 
     @Override
     public void change(DownLoadInfo downLoadInfo) {
-
+//        if(mPager.getCurrentItem()==0||mAdapter.getCurrentFrag(0)!=null){
+//            //更新当前下载的UI
+//            mainFragment = (MainFragment) mAdapter.getCurrentFrag(0);
+//            mainFragment.changeUI();
+//            //mainFragment.publishUI(progress);
+//        }
     }
 
     @Override

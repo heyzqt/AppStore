@@ -1,6 +1,9 @@
 package com.appstore.activity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.PagerAdapter;
@@ -35,6 +38,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,6 +79,8 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
     private static final int UPDATE_INFO = 1234;
 
     private int mCurrentPos = -1;
+
+    private String mFilePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,8 +144,10 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
                 } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_WAITTING) {
                     mTvDownload.setText("等待下载..");
                 } else if (mDownloadInfo.getStatus() == DownloadService.DOWN_FINISHED) {
-                    mTvDownload.setText("下载完成");
+                    mTvDownload.setText("点击下载");
                     //mProgressbar.setBackgroundColor(getResources().getColor(R.color.color_main));
+                } else if(mDownloadInfo.getStatus() == DownloadService.DOWN_INSTALL){
+                    mTvDownload.setText("点击打开");
                 }
 
 
@@ -224,7 +232,11 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
                         break;
                     //APP下载完成
                     case DownloadService.DOWN_FINISHED:
-                        mTvDownload.setText("下载完成");
+                        mTvDownload.setText("点击下载");
+                        break;
+                    //APP已经安装
+                    case DownloadService.DOWN_INSTALL:
+                        mTvDownload.setText("点击打开");
                         break;
                 }
             }
@@ -375,7 +387,16 @@ public class AppDetailsActvity extends BaseActivity implements View.OnClickListe
                         case DownloadService.DOWN_FINISHED:
                             mService.isDownloading = false;
                             Toast.makeText(AppDetailsActvity.this, "APP已下载完成", Toast.LENGTH_SHORT).show();
-                            mTvDownload.setText("下载完成");
+                            mTvDownload.setText("点击安装");
+                            mFilePath =  Environment.getExternalStorageDirectory().getPath() + "/AppStore/"+mDownloadInfo.getPackagename()+".apk";
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.setDataAndType(Uri.fromFile(new File(mFilePath)),"application/vnd.android.package-archive");
+                            startActivity(intent);
+                            break;
+                        //APP成功安装
+                        case DownloadService.DOWN_INSTALL:
+                            mTvDownload.setText("点击打开");
                             break;
                     }
                 }

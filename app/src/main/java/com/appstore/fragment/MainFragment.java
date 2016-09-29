@@ -24,6 +24,8 @@ import com.appstore.activity.AppDetailsActvity;
 import com.appstore.activity.MainActivity;
 import com.appstore.adapter.ImgLoaders;
 import com.appstore.adapter.ListViewAdapter;
+import com.appstore.entity.AppInfo;
+import com.appstore.entity.DownLoadInfo;
 import com.appstore.widget.XListView;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.StaticPagerAdapter;
@@ -38,6 +40,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 张艳琴 on 2016/9/19.
@@ -95,7 +99,6 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
                 e.printStackTrace();
             }
             if (index == 0) {
-
                 mListView.setVisibility(View.VISIBLE);
                 mf_pb.setVisibility(View.GONE);
                 adapter = new ListViewAdapter(getActivity(), listdata);
@@ -110,6 +113,10 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
     };
 
     private MainActivity mainActivity;
+    private DownLoadInfo mDownloadInfo;
+    private List<DownLoadInfo> mWaittings;
+    private AppInfo mAppInfo = null;
+    boolean flag = false;
 
     @Nullable
     @Override
@@ -291,16 +298,46 @@ public class MainFragment extends Fragment implements AdapterView.OnItemClickLis
     }
 
     //更新进度条UI
-//    public void publishUI(int progress){
-//        if (mDownloadInfo != null && mDownloadInfo.getAppId().equals(mService.mDownLoadInfo.getAppId())) {
-//            //Log.i(TAG, "publish: progress=" + progress);
-//            mProgressbar.setProgress(progress);
-//            mCurrentPos = progress;
-//            Message msg = Message.obtain();
-//            msg.what = UPDATE_INFO;
-//            msg.arg1 = progress;
-//            mHandler.sendMessageDelayed(msg, 200);
-//        }
-//    }
+    public void publishUI(int progress) {
 
+        if (flag) {
+            adapter.setProgress(progress);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * 更新在下载表中的对象UI
+     */
+    public void changeUI() {
+
+        //当前正在下载数据是否在当前列表中
+        if (mainActivity.mService.mDownLoadInfo != null) {
+            String packagename = mainActivity.mService.getPackageName();
+            mAppInfo = new AppInfo();
+            //listdata中找是否这个对象
+            for (int i = 0; i < listdata.size(); i++) {
+                if (listdata.get(i).get("packagename").equals(packagename)) {
+                    flag = true;
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map = listdata.get(i);
+                    mAppInfo.setId((Integer) map.get("id"));
+                    mAppInfo.setName((String) map.get("name"));
+                    mAppInfo.setPackageName((String) map.get("packagename"));
+                    mAppInfo.setIconUrl((String) map.get("iconUrl"));
+                    mAppInfo.setDownloadUrl((String) map.get("downloadUrl"));
+                    mAppInfo.setSize((String) map.get("size"));
+                    mAppInfo.setStars((String) map.get("stars"));
+                    mAppInfo.setDate((String) map.get("intro"));
+                    break;
+                }
+            }
+        }
+
+        if (flag) {
+            adapter.setDownloadInfo(mainActivity.mService.mDownLoadInfo);
+            adapter.setService(mainActivity.mService);
+            adapter.notifyDataSetChanged();
+        }
+    }
 }

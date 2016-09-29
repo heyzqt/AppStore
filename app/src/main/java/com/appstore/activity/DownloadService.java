@@ -99,6 +99,7 @@ public class DownloadService extends Service {
     public static final int DOWN_WAITTING = 0x5;    //等待下载
     public static final int DOWN_FAILURE = 0x6;     //下载失败
     public static final int DOWN_STOPED = 0x7;      //停止下载
+    public static final int DOWN_INSTALL = 0x8;     //程序已安装
 
     @Nullable
     @Override
